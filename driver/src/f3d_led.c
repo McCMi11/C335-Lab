@@ -1,6 +1,18 @@
-/************************
- *f3d_led.c - contains intializations/functions for the leds
- ************************/
+/**********************************************
+ *
+ *
+ *   File: f3d_led.c
+ *   Author: Michael McCann
+ *   School: Indiana University
+ *   Assignment: Lab 3
+ *   Part of: Labs
+ *   Description: Contains inializations/functions for then leds
+ *   Date Created: 01/26/17
+ *   Date Modified: 01/30/17
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description:  Added comments
+ */
 
 #include <stm32f30x.h>
 #include <stm32f30x_gpio.h>
