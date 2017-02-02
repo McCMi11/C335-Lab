@@ -2,16 +2,18 @@
  *
  *
  *   File: f3d_led.c
- *   Author: Michael McCann
+ *   Author: Michael McCann - mimccann
+ *   Partner: Bridges, Dyson - drbridge
  *   School: Indiana University
  *   Assignment: Lab 3
  *   Part of: Labs
  *   Description: Contains inializations/functions for then leds
  *   Date Created: 01/26/17
- *   Date Modified: 01/30/17
+ *   Date Modified: 02/02/17
  *   Modified By: Michael McCann
  *
- *   Revision Description:  Added comments
+ *   Revision Description:  Added partner name and username. 
+ *      Added my userrname.
  */
 
 #include <stm32f30x.h>

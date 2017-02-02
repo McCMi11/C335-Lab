@@ -2,7 +2,8 @@
  *
  *
  *   File: f3d_user_btn.c
- *   Author: Michael McCann/
+ *   Author: Michael McCann - mimccann
+ *   Partner: Bridges, Dyson - drbridge
  *   School: Indiana University
  *   Assignment: Lab 3
  *   Part of: Driver files
@@ -11,7 +12,8 @@
  *   Date Modified: 01/30/2017
  *   Modified By: Michael McCann
  *
- *   Revision Description:  Added comments
+ *   Revision Description:  Added partner name and username.
+ *      Added my username.
  */
 
 #include <stm32f30x.h>

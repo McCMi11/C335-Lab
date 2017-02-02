@@ -2,7 +2,8 @@
  *
  *
  *   File: main.c
- *   Author: Michael McCann
+ *   Author: Michael McCann - mimccann
+ *   Partner: Bridges, Dyson - drbridge
  *   School: Indiana University
  *   Assignment: Lab 3
  *   Part of: Labs
