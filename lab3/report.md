@@ -1,7 +1,8 @@
 #Lab 3 Report
 ##Created by
 - Michael McCann - mimccann
-- Partner: Bridges, Dyson - drbridge
+- Partner: Bridges, Dyson - drbridge  
+
 ---
 ##What are specs of the board you are using (ex. Speed, RAM, Flash)?
 1. 72 MHz Clock
