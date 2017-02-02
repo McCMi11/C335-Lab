@@ -69,8 +69,7 @@ int main(void) {
       }
       f3d_led_off(x);// except turns off led x
       delay();
-    }
-  
+    }  
     //--end first while
   }
   //--end main

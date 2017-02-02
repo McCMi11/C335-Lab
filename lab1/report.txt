@@ -1,0 +1,8 @@
+Michael McCann // mimccann
+
+
+Results: I was able to get a program that would print every 3 seconds.  It prints hello world, but to make it a little more annoying I made it change the colors in the terminal.
+
+Difficulties: The most difficult part was thinking of what to do to make it annoying.  I used my knowledge of ASCII escape keys I knew worked with echo and I decided to see if it would work in printf.
+
+Learned: I learned how to better modify text in the terminal.  One other thing that I learned is how to better comment.
