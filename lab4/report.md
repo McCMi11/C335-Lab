@@ -25,7 +25,7 @@ The newlib_ stubs is needed so printf will work due to it is setting the standar
 
 Th Salae Logic Analyzer is the best debugging method to be checking which inputs and outputs the board is getting.
 
-![Screenshot of Salae Logic Analyzer program](https://)
+![Screenshot of Salae Logic Analyzer program](https://github.iu.edu/mimccann/CS-Spring2017/raw/master/lab4/saleae-logic-analyzer.png)
 
 ---
 ## What did you learn, any difficulties you had.  
