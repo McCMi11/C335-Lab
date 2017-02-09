@@ -1,26 +1,19 @@
 /* main.c --- 
  * 
  * Filename: main.c
- * Description: 
- * Author: 
- * Maintainer: 
- * Created: Thu Jan 10 11:23:43 2013
- * Last-Updated: 
- *           By: 
- *     Update #: 0
- * Keywords: 
- * Compatibility: 
- * 
- */
-
-/* Commentary: 
- * 
- * 
+ * Description: Lab 4, word count
+ * Author: Michael McCann: mimccann
+ * Partner: Samuel Carter: sambcart
+ * Maintainer: Michael McCann
+ * Created: 02/02/17
+ * Last-Updated: 02/09/17
+ *           By: Michael McCann
+ *     Update #: 1
  * 
  */
 
 /* Change log:
- * 
+ * Added comments
  * 
  */
 /* Code: */

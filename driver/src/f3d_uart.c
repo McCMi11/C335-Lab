@@ -43,29 +43,59 @@ void f3d_uart_init(void) {
   USART_Init(USART1 ,&USART_InitStructure);
   USART_Cmd(USART1 , ENABLE);
 }
-//sends a character
+/*****************
+ *   putchar
+ *   
+ *   Input: integer, used a char
+ *   Assumptions of input: must be a valid char
+ *   Guarantees about output: sends the int (the char)
+ *   Description: Sends the desired char and returns 0
+ *
+ *
+ */
 int putchar(int c) {
+  // makes sure the pin isnt being used already
   while (USART_GetFlagStatus(USART1,USART_FLAG_TXE) == (uint16_t)RESET){
     
   }
-  USART_SendData(USART1, (char) c);
-  return 0;
+  USART_SendData(USART1, (char) c);// sends the char
+  return 0;// returns 0, identicating success
 } 
-//gets a character
+/*****************
+ *   getchar
+ *   
+ *   Input: N/A
+ *   Assumptions of input: N/A
+ *   Guarantees about output: will output an int, which is a char
+ *   Description: Waits until a char is recieved and returns it
+ *
+ *
+ */
 int getchar(void) {
-  int c;
+  int c;// used to store the char
+  // makes sure the pin isnt being used already
   while (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == (uint16_t)RESET){
 
   }
+  // gets the char
   c = USART_ReceiveData(USART1);
-  return c;
+  return c;// returns the char
 }
-//sends a string
+/*****************
+ *   function putstring
+ *   
+ *   Input: - pointer to a char, used as a string to send
+ *   Assumptions of input: array that ends with null char
+ *   Guarantees about output: sends every char until null char is found
+ *   Description: Sends an entire string through putchar
+ *
+ *
+ */
 void putstring(char *s) {
-  int i = 0;
-  while(*(s+i)){
-    putchar((int) *(s+i));
-    i++;
+  int i = 0;// used to increment
+  while(*(s+i)){// loops until null char
+    putchar((int) *(s+i));// sends char at posistion i
+    i++;// adds one to i, to go to next char
   }
 }
 
