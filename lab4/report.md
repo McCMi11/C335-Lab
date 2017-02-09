@@ -1,7 +1,7 @@
 # Lab Report 4
 ## Authors  
-* Michael McCann
-* Partner: Samuel Carter  
+* Michael McCann: mimccann
+* Partner: Samuel Carter: sambcart  
 ---
 
 ## Questions
@@ -27,6 +27,8 @@ Th Salae Logic Analyzer is the best debugging method to be checking which inputs
 
 ![Screenshot of Salae Logic Analyzer program](https://)
 
+---
 ## What did you learn, any difficulties you had.  
 
-I learned a method to debug the board itself, using the UART and the Logic Analyzer.  This was helpful to learn
+I learned a method to debug the board itself, using the UART and the Logic Analyzer.  This was helpful to learn becuse gdb is a great tool, but can not analyze the board as it is running and test different inputs as easily.  One major diffuculty I had is that my account, not the board or computer, will not work with the make download.  My code will compile fine, but I constantly get error 255, which i was told was hardware.  I had my code checked on one of the AI's computer and it worked, but when I tried it with the same computer and board they used I would get the same error.  We checked the bashrc file to see if the path was not set, but it appears to be correct and the computer was recongizing the device under /dev/ttyUSB0.  
+
