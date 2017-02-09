@@ -1,2 +1,2 @@
-2017-02-02T19:55:41 WARN src/stlink-sg.c: Failed to find an stlink v1 by VID:PID
-2017-02-02T19:55:41 ERROR src/stlink-sg.c: Could not open stlink device
+2017-02-08T19:27:27 WARN src/stlink-sg.c: Failed to find an stlink v1 by VID:PID
+2017-02-08T19:27:27 ERROR src/stlink-sg.c: Could not open stlink device
