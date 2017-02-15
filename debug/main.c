@@ -6,7 +6,6 @@
   The expected performace of the program is as follows:
   We want to print out the actual bits of numbers! What a great
   way to understand how number representation works
-
  */
 
 //The libraries to include
@@ -23,7 +22,7 @@ int gitBitsChar(unsigned char c, char answer[]){
     c=c>>1;
     i--;
   }
-  answer[7]=0;
+  answer[8]=0;
   return 0;
 }
 
@@ -42,7 +41,7 @@ int gitBitsShort(unsigned short s, char answer[]){
 int gitBitsInt(int yikes, char answer[]){
   int i = 0;
   while(yikes<32){
-    if(yikes&1) answer[i] = '1';
+    if((yikes)&1) answer[i] = '1';
     else answer[i] = '0';
     yikes=yikes<<1;
     i++;

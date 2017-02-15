@@ -6,17 +6,17 @@ void f3d_gyro_interface_init() {
   //You must configure and initialize the following 4 pins
 
   //SCK PA5 
-  
+  GPIO_SetBits(GPIOA, GPIO_Pin_5);
   //MOSI PA6 
-  
+  GPIO_SetBits(GPIOA, GPIO_Pin_6);
   //MISO PA7
-
+  GPIO_SetBits(GPIOA, GPIO_Pin_7);
   //CS PE3
-
+  GPIO_SetBits(GPIOE, GPIO_Pin_3);
 
   
   //set the CS high
-  
+  GYRO_CS_HIGH();
   /**********************************************************************/
    
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
@@ -39,6 +39,7 @@ void f3d_gyro_interface_init() {
 //the init function to be called in your main.c
 void f3d_gyro_init(void) {
   //
+  GPIO_SetBits(GPIOE, GPIO_Pin_3);
   //SETTING THE CONTROL REGISTERS 
   f3d_gyro_interface_init();
   // CTRL1 Register 
@@ -96,13 +97,22 @@ void f3d_gyro_write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite
   /************** CODE HERE *********************************************/
 
   //CHECK TO SEE HOW MANY BYTES AND HANDLE THAT CORRECTLY
-
+  if(NumByteToWrite > 1){
+     WriteAddr |= (uint8_t)(0x80 | 0x40);
+  }
   //SET THE CS
-
+  GYRO_CS_LOW();
   //SEND THE FIRST BYTE
-
+  while(NumByteToWrite > 0x00) {
+    //WE are now sending dummy data so we can read the valuable!
+    //remember we must write to read!
+    //putting the information in the buffer
+    *pBuffer = f3d_gyro_sendbyte(WriteAddr);
+    NumByteToRead--;
+    pBuffer++;
+  }
   //IF MULTIPLE, SEND THE ADDITIONAL
-
+  GYRO_CS_HIGH();
   /***************************************************************************/
 }
 
@@ -110,8 +120,11 @@ void f3d_gyro_write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite
 static uint8_t f3d_gyro_sendbyte(uint8_t byte) {
   /*********************************************************/
   /***********************CODE HERE ************************/
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET); 
+  SPI_SendData8(SPI1, byte);
 
-
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+  return (uint8_t)SPI_ReceiveData8(SPI1);
 
   /********************** CODE HERE ************************/
   /*********************************************************/
