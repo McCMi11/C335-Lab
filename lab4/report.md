@@ -1,7 +1,8 @@
 # Lab Report 4
 ## Authors  
-* Michael McCann: mimccann
+* Michael McCann: mimccann  
 * Partner: Samuel Carter: sambcart  
+
 ---
 
 ## Questions
