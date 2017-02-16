@@ -28,25 +28,25 @@ int gitBitsChar(unsigned char c, char answer[]){
 
 int gitBitsShort(unsigned short s, char answer[]){
   int i = 16;
-  while(s<16){
+  while(i>-1){
     if(s&1) answer[i] = '1';
     else answer[i] = '0';
-    s=s<<1;
-    i++;
+    s=s>>1;
+    i--;
   }
-  answer[i]=0;
+  answer[16]=0;
   return 0;
 }
 
 int gitBitsInt(int yikes, char answer[]){
-  int i = 0;
-  while(yikes<32){
-    if((yikes)&1) answer[i] = '1';
+  int i = 31;
+  while(i>-1){
+    if(yikes&1) answer[i] = '1';
     else answer[i] = '0';
-    yikes=yikes<<1;
-    i++;
+    yikes=yikes>>1;
+    i--;
   }
-  answer[i]=0;
+  answer[32]=0;
   return 0;
 }
 
@@ -58,8 +58,8 @@ int main(){
   setvbuf(stderr, NULL, _IONBF, 0);
   char ans1[32];
   char ans2[32];
-  char ans3[32];
-  char ans4[32];
+  char ans3[33];
+  char ans4[33];
   while (1){
     gitBitsShort((unsigned short) 3200, ans1);
     gitBitsChar((unsigned char) 'a', ans2);

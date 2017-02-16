@@ -5,14 +5,48 @@ void f3d_gyro_interface_init() {
   /************** CODE HERE *********************************************/
   //You must configure and initialize the following 4 pins
 
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+  
   //SCK PA5 
-  GPIO_SetBits(GPIOA, GPIO_Pin_5);
-  //MOSI PA6 
-  GPIO_SetBits(GPIOA, GPIO_Pin_6);
-  //MISO PA7
-  GPIO_SetBits(GPIOA, GPIO_Pin_7);
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOA, 5, GPIO_AF_5);
+
+  //MOSI PA6
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin =GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Speed =GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType= GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOA, 6, GPIO_AF_5);
+
+  //MIOS PA7
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin =GPIO_Pin_7;
+  GPIO_InitStructure.GPIO_Speed =GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType= GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOA, 7, GPIO_AF_5);
+
   //CS PE3
-  GPIO_SetBits(GPIOE, GPIO_Pin_3);
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOE, &GPIO_InitStructure);
 
   
   //set the CS high
@@ -98,17 +132,20 @@ void f3d_gyro_write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite
 
   //CHECK TO SEE HOW MANY BYTES AND HANDLE THAT CORRECTLY
   if(NumByteToWrite > 1){
-     WriteAddr |= (uint8_t)(0x80 | 0x40);
+    WriteAddr |= (uint8_t) (0x80 | 0x40);// multiple
+  }else{
+    WriteAddr &= (uint8_t) (-0x80);
   }
   //SET THE CS
   GYRO_CS_LOW();
   //SEND THE FIRST BYTE
+  f3d_gyro_sendbyte(WriteAddr);
   while(NumByteToWrite > 0x00) {
     //WE are now sending dummy data so we can read the valuable!
     //remember we must write to read!
     //putting the information in the buffer
-    *pBuffer = f3d_gyro_sendbyte(WriteAddr);
-    NumByteToRead--;
+    f3d_gyro_sendbyte((uint8_t) *pBuffer);
+    NumByteToWrite--;
     pBuffer++;
   }
   //IF MULTIPLE, SEND THE ADDITIONAL
