@@ -29,3 +29,8 @@ Yes, this is due to if it is too fast or slow it may not send the data properly.
 One major difficulty I had was my partner, I got volunteered to be with someone that did not do any of the previous labs and in order for us to go at all we had to backup and do the bare minimum of the previous labs to allow this lab to be done at all.  I also had to basically train him on github and simple linux commands that he should have already known.  This was a big setback where we did not even get to the main part of the lab and I was forced to work by myself.  This meant that I had to go to the lab throughout the week to get done at all.
 
 The second diffuclty I had was with the debugging part, I could not figure out what was wrong, other than on the char it needed to save one more bit, due to the char is one byte and was only saving 7 bits, which caused the answer to be wrong.  
+
+
+##Screenshot
+
+![Screenshot of logic analyzer](https://github.iu.edu/mimccann/CS-Spring2017/blob/master/lab5/Screenshot.png?raw=true)
