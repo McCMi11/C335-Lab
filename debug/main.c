@@ -22,7 +22,7 @@ int gitBitsChar(unsigned char c, char answer[]){
     c=c>>1;
     i--;
   }
-  answer[8]=0;
+  answer[8]=0;// changed to 8 so it no longer overrites old bit
   return 0;
 }
 
@@ -31,20 +31,20 @@ int gitBitsShort(unsigned short s, char answer[]){
   while(i>-1){
     if(s&1) answer[i] = '1';
     else answer[i] = '0';
-    s=s>>1;
-    i--;
+    s=s>>1; // changed direction of shift
+    i--; // changed to decrement i
   }
   answer[16]=0;
   return 0;
 }
 
 int gitBitsInt(int yikes, char answer[]){
-  int i = 31;
+  int i = 31;// changed to start at index 31
   while(i>-1){
     if(yikes&1) answer[i] = '1';
     else answer[i] = '0';
-    yikes=yikes>>1;
-    i--;
+    yikes=yikes>>1; // changed direction of shift
+    i--; // changed to decrement i
   }
   answer[32]=0;
   return 0;
@@ -58,8 +58,8 @@ int main(){
   setvbuf(stderr, NULL, _IONBF, 0);
   char ans1[32];
   char ans2[32];
-  char ans3[33];
-  char ans4[33];
+  char ans3[33];// changed to 33 to store null char
+  char ans4[33];// changed to 33 to store null char
   while (1){
     gitBitsShort((unsigned short) 3200, ans1);
     gitBitsChar((unsigned char) 'a', ans2);
