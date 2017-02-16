@@ -1,7 +1,7 @@
 #Lab 5
 ##Authors
 * Michael McCann- mimccann  
-* Ross Simpson - rosssimp ... I think  
+* Dylan, Clements   
 
 ##Questions
 ###What does the CS pin do (the CS pin is called SS in the lab manual)?  
