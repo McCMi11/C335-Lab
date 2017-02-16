@@ -3,41 +3,51 @@
  *
  *   File: main.c
  *   Author: Michael McCann - mimccann
- *   Partner: Simpson, Ross - 	rosssimp, I think
+ *   Partner: Dylan, Clements
  *   School: Indiana University
  *   Assignment: Lab 5
  *   Part of: Labs
  *   Description: 
  *   Date Created: 02/15/17
- *   Date Modified: 02/15/17
+ *   Date Modified: 02/16/17
  *   Modified By: Michael McCann
  *
- *   Revision Description: Initial
+ *   Revision Description: Updated, Works.
+ *      Added user button to switch the char as well.
  */
 #include <f3d_uart.h>
 #include <stdio.h>
 #include <f3d_gyro.h>
 #include <f3d_led.h>
 #include <f3d_user_btn.h>
-void delay(){
+void delay(){// copied from previous labs
   int i = 2000000;
   while(i-- > 0){
     asm("nop");
   }
 }
 
+/*****************
+ *   main
+ *   
+ *   Input: N/A
+ *   Assumptions of input: N/A
+ *   Guarantees about output: Outputs gyroscope data
+ *   Description: Lights up leds based on gyroscope data
+ *
+ *
+ */
 int main(void){
   f3d_uart_init();// initiates the uart driver
   f3d_led_init();// initiates the led driver for use
   f3d_user_btn_init();// initiates the button driver for use
   f3d_gyro_init();// initiates the gyro
-  float ax[] = {1, 2, 3};
-  float val = 0;
-  int axis = 0;
-  int i = 0;
-  int c = 0;
+  float ax[] = {1, 2, 3};// used to store the float
+  float val = 0;// value used for 
+  int axis = 0;// used to say which axis is moved
+  int c = 0;// used to store x, y, or z
   
-  while(1){
+  while(1){// new getchar function, doesnt wait for input
     if(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != (uint16_t)RESET){
       c = USART_ReceiveData(USART1);
       if(c == 'x'){
@@ -47,14 +57,25 @@ int main(void){
       }else if(c == 'z'){
 	axis = 2;
       }
-    }
+    }// switches the axis if user button pressed.
     if(user_btn_read()){
       axis = (axis + 1) % 3;
+      switch(axis){
+      case 0: c = 'x'; break;
+      case 1: c = 'y'; break;
+      case 2: c = 'z'; break;
+      }
     }
-    f3d_gyro_getdata(ax);
+    f3d_gyro_getdata(ax);// captures the data from gyroscope
     val = ax[axis];
     printf("axis %c: %f\n", c, val);
-    if(val > 50 || val < -50){
+    /*
+      increments by 50
+      negative turns on right
+      positive turns on left
+      top to bottom is closer to 0.
+     */
+    if(val > 50 || val < -50){ 
       f3d_led_on(1);
     }else{
       f3d_led_off(1);
@@ -94,7 +115,7 @@ int main(void){
     }else{
       f3d_led_off(4);
     }
-    delay();
+    delay();// to allow for slower data
   }
 }
 

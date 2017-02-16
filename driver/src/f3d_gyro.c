@@ -1,3 +1,19 @@
+/******************************************
+ *
+ *
+ *   File: f3d_gyro.c
+ *   Author: Michael McCann
+ *   School: Indiana University
+ *   Assignment: N/A
+ *   Part of: Lab
+ *   Description: Driver files for the gyroscope
+ *   Date Created: 02/15/17
+ *   Date Modified: 02/16/17
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description:  Added comments
+ */
+
 #include <f3d_gyro.h>
 #include <stm32f30x.h>
 void f3d_gyro_interface_init() {
@@ -40,13 +56,14 @@ void f3d_gyro_interface_init() {
   GPIO_PinAFConfig(GPIOA, 7, GPIO_AF_5);
 
   //CS PE3
-  GPIO_StructInit(&GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  GPIO_InitTypeDef GPIO_InitStructure_2;
+  GPIO_StructInit(&GPIO_InitStructure_2);
+  GPIO_InitStructure_2.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure_2.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure_2.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure_2.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure_2.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOE, &GPIO_InitStructure_2);
 
   
   //set the CS high
@@ -132,10 +149,8 @@ void f3d_gyro_write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite
 
   //CHECK TO SEE HOW MANY BYTES AND HANDLE THAT CORRECTLY
   if(NumByteToWrite > 1){
-    WriteAddr |= (uint8_t) (0x80 | 0x40);// multiple
-  }else{
-    WriteAddr &= (uint8_t) (-0x80);
-  }
+    WriteAddr |= (uint8_t) 0x40;
+  }// multiple
   //SET THE CS
   GYRO_CS_LOW();
   //SEND THE FIRST BYTE
@@ -144,7 +159,7 @@ void f3d_gyro_write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite
     //WE are now sending dummy data so we can read the valuable!
     //remember we must write to read!
     //putting the information in the buffer
-    f3d_gyro_sendbyte((uint8_t) *pBuffer);
+    f3d_gyro_sendbyte( *pBuffer);
     NumByteToWrite--;
     pBuffer++;
   }
