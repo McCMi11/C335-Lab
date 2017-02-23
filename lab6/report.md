@@ -1,7 +1,8 @@
 #Lab 6  
 ##Authors  
-*Michael McCann - mimccann
+*Michael McCann - mimccann  
 *Taylor Smith   - tayjsmit  
+
 ---  
 ##Questions  
 ###Discuss the advantages and disadvantages of printf debugging?  
