@@ -27,6 +27,9 @@ It has each character stored 5 bytes, which each byte represent a collumn in an 
 ##Screenshot
 
 ![Screenshot of logic analyzer](https://github.iu.edu/mimccann/CS-Spring2017/blob/master/lab6/screenshot.png?raw=true)
+![Screenshot of logic analyzer](https://github.iu.edu/mimccann/CS-Spring2017/blob/master/lab6/screenshot2.png?raw=true)
+
+
 
 ##Difficulties  
 The main difficulty I had was with the LCD screen.  We were attempting to use the lcd_backlight_on(), but it kept turning off instead of staying on.  Throgh trial and error we found that without using that function it would actually turn on and stay on.  The other trouble I had was figuring out how big the screen was and which direction would start at point (0,0) and such to draw where I waned to.
