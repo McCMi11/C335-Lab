@@ -36,8 +36,6 @@
 #include <f3d_lcd_sd.h>
 #include <f3d_delay.h>
 #include <glcdfont.h>
-#include <stm32f30x_tim.h>
-#include <stm32f30x_spi.h>
 
 static uint8_t madctlcurrent = MADVAL(MADCTLGRAPHICS);
 
@@ -197,8 +195,7 @@ void f3d_lcd_init(void) {
   const struct lcd_cmdBuf *cmd;
 
   f3d_lcd_sd_interface_init();    // Setup SPI2 Link and configure GPIO pins
-  LCD_BKL_OFF();                   // Enable Backlight
-  //LCD_BKL_ON();                   // Enable Backlight
+  LCD_BKL_ON();                   // Enable Backlight
 
   // Make sure that the chip select and reset lines are deasserted
   LCD_CS_DEASSERT();              // Deassert Chip Select
@@ -326,7 +323,39 @@ void f3d_lcd_drawPixel(uint8_t x, uint8_t y, uint16_t color) {
   f3d_lcd_pushColor(&color,1);
 }
 
-void f3d_lcd_drawChar(uint8_t x, uint8_t y, unsigned char c, uint16_t color, uint16_t background_color) {
+/* main.c ---
+*
+* Filename: main.c
+* Description:
+* Author:
+* Maintainer:
+* Created: Thu Jan 10 11:23:43 2013
+/* Code: */
+
+#include <stm32f30x.h> // Pull in include files for F30x standard drivers
+#include <f3d_led.h> // Pull in include file for the local drivers
+#include <f3d_uart.h>
+#include <f3d_gyro.h>
+#include <f3d_lcd_sd.h>
+#include <stdio.h>
+
+#define TIMER 20000
+
+int main(void) {
+  // If you have your inits set up, this should turn your LCD screen red
+  f3d_lcd_init();
+  f3d_lcd_fillScreen(RED);
+}
+
+#ifdef USE_FULL_ASSERT
+void assert_failed(uint8_t* file, uint32_t line) {
+/* Infinite loop */
+/* Use GDB to find out why we're here */
+  while (1);
+}
+#endif
+
+/* main.c ends here */void f3d_lcd_drawChar(uint8_t x, uint8_t y, unsigned char c, uint16_t color, uint16_t background_color) {
   int i, j;
   for (i = 0; i < 5; i++) {
     for (j = 0; j < 8; j++){ 
