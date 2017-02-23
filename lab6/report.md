@@ -1,7 +1,7 @@
 #Lab 6  
 ##Authors  
-*Michael McCann - mimccann  
-*Taylor Smith   - tayjsmit  
+* Michael McCann - mimccann  
+* Taylor Smith   - tayjsmit  
 
 ---  
 ##Questions  
