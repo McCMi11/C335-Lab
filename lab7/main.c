@@ -1,11 +1,21 @@
-/* main.c ---
+/******************************************
  *
-* Filename: main.c
-* Description:
-* Author: Michael McCann
-* Maintainer:
-* Created: Thu Jan 10 11:23:43 2013
-/* Code: */
+ *
+ *   File: main.c
+ *   Author: Michael McCann
+ *   Partner: Taylor Smith   - tayjsmit
+ *   School: Indiana University
+ *   Assignment: Lab 7
+ *   Part of: Labs
+ *   Description: Calculates and displays
+ *      information gathered from accelerometer
+ *      and magnometer.
+ *   Date Created: 2/23/17
+ *   Date Modified: 2/27/17
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description: Added comment heading
+ */
 
 #include <stm32f30x.h> // Pull in include files for F30x standard drivers
 #include <f3d_uart.h>

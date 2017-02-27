@@ -1,4 +1,10 @@
 #Lab 7  
+##Difficulties  
+
+
+##What did I learn  
+
+
 ##Questions  
 ###Q1: accelerometer/magnetometer  
 ####How many pins does it have?  
@@ -22,6 +28,8 @@
 Acceleration (any axis, powered, Vdd = 2.5 V)
 
 ####Describe where it is on the board  
+!(Accelerometer location)[https://github.iu.edu/mimccann/CS-Spring2017/blob/master/lab7/c335board.png]
 
 
 ---
+###Q2:  
