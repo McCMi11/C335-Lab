@@ -11,10 +11,12 @@
  *      information gathered from accelerometer
  *      and magnometer.
  *   Date Created: 2/23/17
- *   Date Modified: 2/27/17
+ *   Date Modified: 2/28/17
  *   Modified By: Michael McCann
  *
- *   Revision Description: Added comment heading
+ *   Revision Description: Added some functions
+ *                         Added comments
+ *                         Made user button better.
  */
 
 #include <stm32f30x.h> // Pull in include files for F30x standard drivers
@@ -33,7 +35,7 @@ char dirr[][11] =
   {"NORTH", "NORTH-EAST",
    "EAST", "SOUTH-EAST",
    "SOUTH", "SOUTH-WEST",
-   "WEST", "NORTH-WEST"};
+   "WEST", "NORTH-WEST"};// Used to store direction.
 
 /*****************
  *   drawVertLine
@@ -117,7 +119,18 @@ void drawMiddleLine(int y, int c) {
     f3d_lcd_drawPixel(i++,y,c);
   }
 }
-
+/*****************
+ *   clearBars
+ *
+ *   Input: - N/A
+ *   Assumptions of input: N/A
+ *   Guarantees about output: Clears the bars from the LCD
+ *   Description: Clears the bars from the LCD
+ *      the color will be white where they were.
+ *      It clears top to middle, then bottom to middle.
+ *      It goes slow to give shrinking appearance.
+ *
+ */
 void clearBars(){
   int i = 22;
   while(i < 90){
@@ -129,7 +142,21 @@ void clearBars(){
   }
   drawMiddleLine(90, BLUE); //draw the diving line at y=90
 }
-
+/*****************
+ *   drawRect
+ *
+ *   Input: - int c - Color
+ *          - int x - top left corner, x
+ *          - int y - top left corner, y
+ *          - int w - width
+ *          - int h - height
+ *   Assumptions of input: Color is valid and all others
+ *          are on the screen and are positive.
+ *   Guarantees about output: Draws rectangle of given
+ *      size, assuming it is on the screen.
+ *   Description: Draws rectangle at given location.
+ *
+ */
 void drawRect(int c, int x, int y, int w, int h){
   int height = h;
   while(x+w >= x){
@@ -142,6 +169,16 @@ void drawRect(int c, int x, int y, int w, int h){
   }
 }
 
+/*****************
+ *   clearBars
+ *
+ *   Input: - int dir - direction of compas, in degrees
+ *   Assumptions of input: will be between -180 and 180
+ *   Guarantees about output: Turns on at most one led,
+ *      others will be off.
+ *   Description: Used to turn on desired led for the compas.
+ *
+ */
 int lightCompas(int dir){
   f3d_led_all_off();
   if(dir > -22 && dir < 22){
@@ -195,18 +232,18 @@ int main(void) {
   float xh;
   float yh;
   float heading;
+  int i;
   char output[10]; //string for snprintf() to use
+  int btn = 0;
   int usr = 1; // 1 = accel, 0 = mag
   int def = 1; // 1 = drawn, 0 = not drawn
   int direct = 0;// used to store the direction
-  int dir;
-  int prev = 0;
-  LCD_BKL_ON();
+  int dir; // used to 
+  int prev = 200; // used to check if the compas direction changed.
   f3d_lcd_fillScreen2(WHITE);
   drawMiddleLine(90, BLUE); //draw the diving line at y=90
   f3d_lcd_drawString(20,0,"Pitch: ",RED,WHITE);
   f3d_lcd_drawString(20,10,"Roll: %f",BLACK,WHITE);
-  LCD_BKL_OFF();
   while(1){
     f3d_accel_read(accel);
     f3d_mag_read(magg);
@@ -239,8 +276,9 @@ int main(void) {
       clearBars();
     }else{
       if(def){
+	prev = 200; // To guarantee it draws first direction.
 	LCD_BKL_ON();
-	def = 0;
+	def = 0;// so it doesnt redraw static elements.
 	f3d_lcd_fillScreen2(BLACK);
 	f3d_lcd_drawString(20,50,"Direction:",WHITE,BLACK);
 	LCD_BKL_OFF();
@@ -253,9 +291,14 @@ int main(void) {
 	prev = direct;
       }
     }
-    delay(100);
-    if(user_btn_read()){
-      usr = !usr;
+    // splits delay into multiple ones
+    // to allow to better control over button.
+    for(i = 0; i < 10; i++){
+      btn = btn || user_btn_read();
+      delay(10);
+    }
+    if(btn){
+      usr = !usr;// flips the usr.
     }
   }
 }
