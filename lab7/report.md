@@ -1,9 +1,9 @@
 #Lab 7  
 ##Difficulties  
-
+I was having some difficulties with the only clearing parts of the screen as needed instead of clearing it all at once.  Another trouble I was having was that when I was using the formulas gor calculating the pitch, roll, and the others needed.  I was not sure what each formula was calculating.  I would attempt to read the document more, but would stay just as confused each time.  I finally had to ask one of the TA's for help and was able to understand them.  The one used for calculating the direction of the compas was also confusing since I did not know to use a different function, due to the doccument said to use one that did not return a value in the correct range.  The function I needed was atan2f, but I was using atan.  The new one returns values from -180 degrees to 180 degrees, but the radian form.
 
 ##What did I learn  
-
+I learned that I should not hardcode items as much for writing to the LCD.  I took a few functions and made them so they can take a start x, start y, color, as well as the height and width.  I also learned that I should only clear parts of the screen as needed instead of changing it fully each time.  I also now better understand on how to write to the LCD and draw items in a quicker fashion.
 
 ##Questions  
 ###Q1: accelerometer/magnetometer  

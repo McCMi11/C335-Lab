@@ -29,6 +29,11 @@
 #include <math.h>
 
 #define TIMER 20000
+char dirr[][8] =  
+  {"NORTH", "NORTH-EAST",
+   "EAST", "SOUTH-EAST",
+   "SOUTH", "SOUTH-WEST",
+   "WEST", "NORTH-WEST"};
 
 /*****************
  *   drawVertLine
@@ -125,45 +130,46 @@ void clearBars(){
   drawMiddleLine(90, BLUE); //draw the diving line at y=90
 }
 
-void lightCompas(int dir){
+void drawRect(int c, int x, int y, int w, int h){
+  int height = h;
+  while(x+w >= x){
+    while(y+h >= y){
+      f3d_lcd_drawPixel(x+w,y+h,c);
+      h--;
+    }
+    w--;
+    h = height;
+  }
+}
+
+int lightCompas(int dir){
   f3d_led_all_off();
   if(dir > -22 && dir < 22){
     f3d_led_on(1); // North
+    return 0;
   }else if(dir >=22 && dir < 67){
     f3d_led_on(2); // North East
+    return 1;
   }
   if(dir >= 67 && dir < 112){
     f3d_led_on(3); // East
+    return 2;
   }else if(dir >= 112 && dir < 157){
     f3d_led_on(4); // South East
+    return 3;
   }else if((dir >= 157 || dir <= -157)){
     f3d_led_on(5); // South
+    return 4;
   }else if(dir > -67 && dir <= -22){
     f3d_led_on(0); // North West
+    return 7;
   }else if(dir > -112 && dir <= -67){
     f3d_led_on(7); // West
+    return 6;
   }else if(dir > -157 && dir <= -112){
-    f3d_led_on(6); // South
+    f3d_led_on(6); // South West
+    return 5;
   }
-  /*
-  if(dir >= 0 && dir <= 90){
-    f3d_led_on(1);
-    f3d_led_on(2);
-    f3d_led_on(3);
-  }else if(dir >=90 && dir <= 180){
-    f3d_led_on(3);
-    f3d_led_on(4);
-    f3d_led_on(5);
-  }else if(dir <=-90 && dir >= -180){
-    f3d_led_on(5);
-    f3d_led_on(6);
-    f3d_led_on(7);
-  }else if(dir <= 0 && dir >= -90){
-    f3d_led_on(0);
-    f3d_led_on(7);
-    f3d_led_on(1);
-  }
-  */
 }
 
 int main(void) {
@@ -192,6 +198,8 @@ int main(void) {
   char output[10]; //string for snprintf() to use
   int usr = 1; // 1 = accel, 0 = mag
   int def = 1; // 1 = drawn, 0 = not drawn
+  int direct = 0;// used to store the direction
+  int dir;
   drawMiddleLine(90, BLUE); //draw the diving line at y=90
   f3d_lcd_drawString(20,0,"Pitch: ",RED,WHITE);
   f3d_lcd_drawString(20,10,"Roll: %f",BLACK,WHITE);
@@ -205,12 +213,12 @@ int main(void) {
     heading = atan2f(yh,xh);
     if(usr){
       if(!def){
-	LCD_BKL_OFF(); // turn on backlight
 	f3d_lcd_fillScreen2(WHITE);
 	int def = 1; // 1 = drawn, 0 = not drawn
 	drawMiddleLine(90, BLUE); //draw the diving line at y=90
 	f3d_lcd_drawString(20,0,"Pitch: ",RED,WHITE);
-	f3d_lcd_drawString(20,10,"Roll: %f",BLACK,WHITE);
+	f3d_lcd_drawString(20,10,"Roll: ",BLACK,WHITE);
+	LCD_BKL_OFF(); // turn on backlight
       }
       //display X value
       snprintf(output, 10, "%f", pitch);
@@ -226,12 +234,18 @@ int main(void) {
       clearBars();
       printf("heading: %f\n", (heading * (180/3.141592)));
     }else{
+      drawRect(BLACK, 30, 30, 70, 10);
       if(def){
 	def = 0;
-	f3d_lcd_fillScreen2(BLACK);
 	LCD_BKL_ON();// turns off backlight
+	f3d_lcd_fillScreen2(BLACK);
+	f3d_lcd_drawString(20,30,"Direction:",WHITE,BLACK);
+	LCD_BKL_OFF();// turns on backlight
       }
-      lightCompas((int)(heading * (180/3.141592)));
+      dir = (int)(heading * (180/3.141592));
+      direct = lightCompas(dir);
+      f3d_lcd_drawString(30,30,dirr[direct],WHITE,BLACK);
+      
     }
     delay(100);
     if(user_btn_read()){
