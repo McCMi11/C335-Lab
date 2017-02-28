@@ -82,3 +82,6 @@ for (i=0; i<3; i++) {
 ###Q4: Tilt
 ####Why might it be necessary to tilt compensate your compass computation?
 It may be necessary to compensate for the tilt in the compas, due to the posistion of the board can determine if the reading is correct, for example if the board is upside down the reading can be reversed.  The other angles can do the same thing, but may not fully reverse the reading.  I believe that without compensating for the tilt the upside down reading will give an error instead of calculating any value.
+
+##Logic Analyzer  
+![Accelerometer location](https://github.iu.edu/mimccann/CS-Spring2017/blob/master/lab7/logic-screenshot.png)

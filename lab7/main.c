@@ -29,7 +29,7 @@
 #include <math.h>
 
 #define TIMER 20000
-char dirr[][8] =  
+char dirr[][11] =  
   {"NORTH", "NORTH-EAST",
    "EAST", "SOUTH-EAST",
    "SOUTH", "SOUTH-WEST",
@@ -200,9 +200,13 @@ int main(void) {
   int def = 1; // 1 = drawn, 0 = not drawn
   int direct = 0;// used to store the direction
   int dir;
+  int prev = 0;
+  LCD_BKL_ON();
+  f3d_lcd_fillScreen2(WHITE);
   drawMiddleLine(90, BLUE); //draw the diving line at y=90
   f3d_lcd_drawString(20,0,"Pitch: ",RED,WHITE);
   f3d_lcd_drawString(20,10,"Roll: %f",BLACK,WHITE);
+  LCD_BKL_OFF();
   while(1){
     f3d_accel_read(accel);
     f3d_mag_read(magg);
@@ -213,12 +217,13 @@ int main(void) {
     heading = atan2f(yh,xh);
     if(usr){
       if(!def){
+	LCD_BKL_ON();
 	f3d_lcd_fillScreen2(WHITE);
-	int def = 1; // 1 = drawn, 0 = not drawn
+	def = 1; // 1 = drawn, 0 = not drawn
 	drawMiddleLine(90, BLUE); //draw the diving line at y=90
 	f3d_lcd_drawString(20,0,"Pitch: ",RED,WHITE);
 	f3d_lcd_drawString(20,10,"Roll: ",BLACK,WHITE);
-	LCD_BKL_OFF(); // turn on backlight
+	LCD_BKL_OFF();
       }
       //display X value
       snprintf(output, 10, "%f", pitch);
@@ -232,20 +237,21 @@ int main(void) {
       //draw Y line
       drawVertBar(78,90,(int) (roll*40),6,BLACK);
       clearBars();
-      printf("heading: %f\n", (heading * (180/3.141592)));
     }else{
-      drawRect(BLACK, 30, 30, 70, 10);
       if(def){
+	LCD_BKL_ON();
 	def = 0;
-	LCD_BKL_ON();// turns off backlight
 	f3d_lcd_fillScreen2(BLACK);
-	f3d_lcd_drawString(20,30,"Direction:",WHITE,BLACK);
-	LCD_BKL_OFF();// turns on backlight
+	f3d_lcd_drawString(20,50,"Direction:",WHITE,BLACK);
+	LCD_BKL_OFF();
       }
       dir = (int)(heading * (180/3.141592));
       direct = lightCompas(dir);
-      f3d_lcd_drawString(30,30,dirr[direct],WHITE,BLACK);
-      
+      if(prev != direct){
+	drawRect(BLACK, 20, 60, 90, 10);
+	f3d_lcd_drawString(20,60,dirr[direct],WHITE,BLACK);
+	prev = direct;
+      }
     }
     delay(100);
     if(user_btn_read()){
