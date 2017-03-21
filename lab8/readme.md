@@ -23,6 +23,8 @@
 
 ###4) Explain the code (below).
 
+The code checks the nunchuck raw data it read and at the first 2 bits checks which ones are ones.  The first bit corresponds to the c button and the second bit corresponds to z button.  In binary 0 is 00, 1 is 01, 2 is 10, and 3 is 11.  However, 
+
 ```c
 //from f3d_nunchuk_read
   switch (data[5] & 0x03) {
