@@ -1,7 +1,8 @@
 #Lab 8 
 ##Authors  
 *Michael McCann- mimccann
-*Partner: Connor Ward- conward  
+*Partner: Connor Ward- conward
+  
 ---
 
 ##Difficulties  
