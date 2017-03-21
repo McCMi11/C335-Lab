@@ -23,7 +23,7 @@
 
 ###Explain the code (below).
 
-'''c
+```c
 //from f3d_nunchuk_read
   switch (data[5] & 0x03) {
   case 2:
@@ -43,4 +43,4 @@
     n->c = 0;
     break;
   }
-'''
+```
