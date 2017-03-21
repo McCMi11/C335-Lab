@@ -20,22 +20,34 @@
 #include <f3d_nunchuk.h>
 
 #define TIMER 20000
-/*  Used to keep track of posistions
- *  Red is 1,2
- *  Black is 3,4
- *  1,3 is for normal
- *  2,4 is for kings
-*/
-int BOARD[][4] = {
-  {0, 0, 0, 0},
-  {0, 0, 0, 0},
-  {0, 0, 0, 0},
-  {0, 0, 0, 0}
+// Types of moves
+enum {WIN1, WIN2, MOVE, 
+      RESTART, PAUSE,
+      P1KING, P1REG,
+      P2KING, P2REG,
+      BLANK, INIT, 
+      MADEMOVE, JUMP};
+int STATE = INIT;
+// board init
+int BOARD[8][4] = {
+  {P1REG, P1REG, P1REG, P1REG},
+  {P1REG, P1REG, P1REG, P1REG},
+  {P1REG, P1REG, P1REG, P1REG},
+  {BLANK, BLANK, BLANK, BLANK},
+  {BLANK, BLANK, BLANK, BLANK},
+  {P2REG, P2REG, P2REG, P2REG},
+  {P2REG, P2REG, P2REG, P2REG},
+  {P2REG, P2REG, P2REG, P2REG}
 };
-
+// to keep track of total moves made this game
 int MOVES = 0;
-int P1 = 0;
-int P2 = 0;
+// to keep track of wins
+int P1WINS = 0;
+int P2WINS = 0;
+// to keep track of number of pieces
+int P1 = 12;
+int P2 = 12;
+int TURN = 0;
 
 //  used for player names, max 8 char.
 char PLAYER1[9] = "Player 1";
@@ -90,7 +102,7 @@ void drawSquare(int x, int y, int side, int c){
   drawRect(x, y, side, side, c);
 }
 
-void drawcircle(int x0, int y0, int radius, int c, int filled){
+void drawCircle(int x0, int y0, int radius, int c, int filled){
   int x = radius;
   int y = 0;
   int err = 0;
@@ -118,23 +130,64 @@ void drawcircle(int x0, int y0, int radius, int c, int filled){
     }
   }
   if(filled){
-    drawcircle(x0, y0, radius - 1, c, filled);
+    drawCircle(x0, y0, radius - 1, c, filled);
   }
+}
+
+void drawSplash(){
+  f3d_lcd_fillScreen(WHITE);
 }
 
 void drawBoard(){
   int w = 8;
   int h = 8;
-  int i, j;
+  int i = 0;
+  int j = 0;
   
-  for(i = 0; i < 8; i++){
-    for(j = 0; j < 8; j+= 2){
+  while(i++ < 8){
+    j = 0;
+    while(j < 8){
       drawSquare(8*w - 8*i, 32 + 8*h - 8*j, 16, BLACK);
+      j += 2;
     }
-    for(j = 1; j < 8; j+= 2){
+    j = 1;
+    while(j < 8){
       drawSquare(8*w - 8*i, 32 + 8*h - 8*j, 16, WHITE);
+      j += 2;
     }
   }
+}
+
+void drawPiece(int r, int c, int type){
+  switch(type){
+    case P1KING:
+      drawCircle(8*r + 4, 8*c + 36, 4, RED, 1);
+      break;
+    case P1REG:
+      drawCircle(8*r + 4, 8*c + 36, 4, RED, 1);
+      break;
+    case P2KING:
+      drawCircle(8*r + 4, 8*c + 36, 4, BLACK, 1);
+      break;
+    case P2REG:
+      drawCircle(8*r + 4, 8*c + 36, 4, BLACK, 1);
+      break;
+    }
+}
+
+void reDraw(){
+  int i = 0;
+  int j = 0;
+  while(i++ < 8){
+    j = 0;
+    while(j++ < 4){
+      drawPiece(i,j,BOARD[i][j]);
+    }
+  }
+}
+
+void wait(){
+  while(!user_btn_read());
 }
 
 int main(void) {
@@ -173,18 +226,105 @@ int main(void) {
    int j, k;
    int x, y, xnun, ynun;
    int button = 0;
+   int spacex = 0;
+   int spacey = 0;
+   int piecex = -1;
+   int piecey = -1;
 
+   // create arrays for strings
+   char totMoves[5];
+   char p1Wins[5];
+   char p2Wins[5];
    char output1[10]; //string for snprintf() to use
    char output2[10]; //string for snprintf() to use
    char output3[10]; //string for snprintf() to use
 
-   struct nunchuk_data test;
+   struct nunchuk_data nunchuck;
 
    //establish a blank white screen on LCD
    f3d_lcd_fillScreen(WHITE);
+   drawSplash();
+   // wait for user button to be pressed.
+   wait();
+   f3d_lcd_fillScreen(WHITE);
    drawBoard();
    while(1) {
-     
+     f3d_nunchuk_read(&nunchuck);
+     if(!P1) STATE = WIN2;
+     if(!P2) STATE = WIN1;
+
+     switch(STATE){
+     case INIT:
+       break;
+     case WIN1:
+       P1WINS++;// add win to p1
+       wait();
+       STATE = RESTART;
+       break;
+       
+     case WIN2:
+       P2WINS++;// add win to p2
+       break;
+       
+     case MOVE:
+       if(nunchuck.c){
+	 if(piecex == -1){
+	   // c button pressed and no prev piece selected
+	   if(TURN){
+      	     if(BOARD[spacex][spacey] == P1REG || BOARD[spacex][spacey] == P1KING){
+	       piecex = spacex;
+	       piecey = spacey;
+	       drawCircle(8*spacex + 4, 8*spacey + 36, 4, GREEN, 0);
+	     }
+	   }else{
+	     if(BOARD[spacex][spacey] == P2REG || BOARD[spacex][spacey] == P2KING){
+               piecex = spacex;
+               piecey = spacey;
+               drawCircle(8*spacex + 4, 8*spacey + 36, 4, GREEN, 0);
+             }
+	   }
+	 }else{
+	   // code here if there is a piece selected and c button pressed.
+	 }
+       }else if(nunchuck.z){
+	 piecex = -1;
+	 piecey = -1;
+       }
+       break;
+       
+     case MADEMOVE:
+       break;
+       
+     case RESTART:
+       for(j = 0; j < 3; j++){
+	 for(k = 0; k < 4; k++){
+	   BOARD[j][k] = P1REG;
+	 }
+       }
+       for(j = 3; j < 5; j++){
+	 for(k = 0; k < 4; k++){
+	   BOARD[j][k] = BLANK;
+	 }
+       }
+       for(j = 5; j < 8; j++){
+         for(k = 0; k < 4; k++){
+           BOARD[j][k] = P2REG;
+         }
+       }
+       STATE = INIT;
+       break;
+       
+     case PAUSE:
+       f3d_lcd_fillScreen(WHITE);
+       f3d_lcd_drawString(50, 60, "Game is paused", RED, WHITE);
+       f3d_lcd_drawString(20, 70, "Press the user button to continue", BLACK, WHITE);
+       wait();// wait for user button to continue
+       drawBoard();
+       reDraw();
+       STATE = MOVE;
+       break;
+       
+     }
    }
 }
 
