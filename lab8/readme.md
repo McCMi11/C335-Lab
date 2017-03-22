@@ -7,9 +7,11 @@
 
 ##Difficulties  
 
+The only real difficult part we were having was the accelerometer in the nunchuk does not work that well.  We were able to combine our code somewhat quickly, due to we had almost the same setup, apart from some abstraced functions.  We chose the code that seemed to get the job done more efficiently, which was a little dificult to avoid variable names being the same.  After we combined them we only had one compiler error, first attempt, which was only a missing semicolin, which fixing that had it worked exactly as planned.
 
 ##What did I learn  
 
+I learned it is better to abstract out more of the drawing functions to the max possible, which allows for color choice, size choice, as well as location., which I found out would be used much more than I had anticipated.  I also learned more on what the nunchuck reads and how it can determine which way the joystick is being moved, only using two variables.  
 
 ##Questions  
 ###1) In previous labs, adding a peripheral has required pin initializations. Why were able to add the nunchuk without initializing anything?
