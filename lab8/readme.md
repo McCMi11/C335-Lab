@@ -99,7 +99,7 @@ typedef struct nunchuk_data {
 
 ###4) Explain the code (below).
 
-The code checks the nunchuck raw data it read and at the first 2 bits checks which ones are ones.  The first bit corresponds to the c button and the second bit corresponds to z button.  In binary 0 is 00, 1 is 01, 2 is 10, and 3 is 11.  However, 
+The code checks the nunchuck raw data it read and at the first 2 bits checks which ones are ones.  The left most bit corresponds to the z button and the other bit corresponds to c button.  In binary 0 is 0b00, 1 is 0b01, 2 is 0b10, and 3 is 0b11.  However, when the two bits are the same, case 0 and 3, the result is switched.  This could be due to some carry or something.
 
 ```c
 //from f3d_nunchuk_read
