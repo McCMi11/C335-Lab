@@ -1,17 +1,19 @@
-//Name: Michael McCann
-//Username: mimccann
-// Partner: Connor Ward
-// username: conward
-// No partner
-
-/* main.c ---
-*
-* Filename: main.c
-* Description:
-* Author:
-* Maintainer:
-* Created: Thu Jan 10 11:23:43 2013
-/* Code: */
+/******************************************
+ *
+ *
+ *   File: filename.c
+ *   Author: Michael McCann- mimccann
+ *   Partner: Connor Ward- conward
+ *   School: Indiana University
+ *   Assignment: Lab 8
+ *   Part of: labs
+ *   Description: Reads from magnometer, gyro, accel, nunchuck and combines them all into one gui, using the lcd
+ *   Date Created: 02/27/2017
+ *   Date Modified: 03/23/2017
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description:  Fixed gyro crash bug
+ */
 
 #include <stm32f30x.h> // Pull in include files for F30x standard drivers
 #include <f3d_uart.h>
@@ -28,6 +30,22 @@
 
 #define TIMER 20000
 
+/*****************
+ *   drawVertLine
+ *
+ *   Input: - uint8_t x, used to specify
+ *                    x cordinate.
+ *          - uint8_t y, used to specify
+ *                    y start cordinate.
+ *          - int length, used to say how
+ *                    long the line will be.
+ *   Assumptions of input: Inputs will stay on screen.
+ *   Guarantees about output: Draws a line on the LCD
+ *   Description: Draws a line on the LCD, starting
+ *      at the given x and y.  If the length is negative,
+ *      it draws the line downward, else upwards.
+ *
+ */
 void drawVertLine(uint8_t x, uint8_t y, int length, int c){
   int i = 0;
   if (length > 0) {
@@ -43,6 +61,26 @@ void drawVertLine(uint8_t x, uint8_t y, int length, int c){
   }
 }
 
+/*****************
+ *   drawVertBar
+ *
+ *   Input: - uint8_t x, used to specify
+ *                    x cordinate.
+ *          - uint8_t y, used to specify
+ *                    y start cordinate.
+ *          - int length, used to say how
+ *                    long the line will be.
+ *          - int width, used to say how wide
+ *                    the bar will be.
+ *   Assumptions of input: Inputs will stay on screen.
+ *   Guarantees about output: Draws a thick line on the LCD
+ *   Description: Draws a bar on the LCD, starting
+ *      at the given x and y.  If the length is negative,
+ *      it draws the line downward, else upwards.  Uses
+ *      the function drawVertLine the number of times as
+ *      width
+ *
+ */
 void drawVertBar(uint8_t x, uint8_t y, int length, int width, int c){
   int j = 0;
   while (j < width) {
@@ -51,6 +89,18 @@ void drawVertBar(uint8_t x, uint8_t y, int length, int width, int c){
   }
 }
 
+/*****************
+ *   drawMiddleLine
+ *
+ *   Input: - int y, used to specify where to draw line
+ *   Assumptions of input: y is positive
+ *   Guarantees about output: a line is drawn accross
+ *      the screen at posistion (*,y) for all * on the screen.
+ *   Description: Draws a line in the middle of the screen
+ *      at the given y value.
+ *
+ *
+ */
 void drawMiddleLine(int y) {
   int i = 0;
   while (i <= 127) {
@@ -88,24 +138,31 @@ int main(void) {
    float m[3];
    float i[3];
 
+   // used to indicate if it is nunchuk initial state
+   int gyroinit = 1;
+
    //create floats for the compass computations
    float pitch, roll, heading, xh, yh, degrees;
    float pitchnun, rollnun;
 
    //create ints for various loops and calls throughout
-   int j, k;
-   int x, y, xnun, ynun;
+   int j = 0; int k = 0;
+   // used for drawing
+   int x = 0; int y = 0; int xnun = 0; int ynun = 0;
+   // determines case
    int button = 0;
+   
+   //string for snprintf() to use, stores text
+   char output1[10]; 
+   char output2[10];
+   char output3[10];
 
-   char output1[10]; //string for snprintf() to use
-   char output2[10]; //string for snprintf() to use
-   char output3[10]; //string for snprintf() to use
-
+   // create nunchuk to be used
    struct nunchuk_data test;
 
    //establish a blank white screen on LCD
    f3d_lcd_fillScreen(WHITE);
-
+   // runs forever
    while(1) {
      if(button == 2 || button == 0){
        for(j = 20; j < 110; j++) {
@@ -244,16 +301,20 @@ int main(void) {
 
      if(button == 3) {
        f3d_lcd_drawString(5, 0, "Gyro", RED, WHITE);
-       //draw X line
-       drawVertBar(7,90,(int) i[0]/10,6, WHITE);//divide by 10 so it fits on the screen
+       if(!gyroinit){
+	 //draw X line
+	 drawVertBar(7,90,(int) i[0]/10,6, WHITE);//divide by 10 so it fits on the screen
 
-       //draw Y line
-       drawVertBar(61,90,(int) i[1]/10,6, WHITE);
+	 //draw Y line
+	 drawVertBar(61,90,(int) i[1]/10,6, WHITE);
 
-       //draw Z line
-       drawVertBar(114,90,(int) i[2]/6,6, WHITE);
-       
+	 //draw Z line
+	 drawVertBar(114,90,(int) i[2]/6,6, WHITE);
+	 
+       }
        f3d_gyro_getdata(i);
+       gyroinit = 0;
+
        //f3d_lcd_fillScreen(WHITE);
        drawMiddleLine(90); //draw the diving line at y=90
 
@@ -294,10 +355,12 @@ int main(void) {
      //goes in opposite direction
      else if(test.z || !test.jx){
        button--;
+       gyroinit = 1;
        if(button < 0){
 	 button = 3;
        }
        else {
+	 gyroinit = 1;
 	 button = button%4;
        }
        f3d_led_all_off();

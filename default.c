@@ -2,7 +2,8 @@
  *
  *
  *   File: filename.c
- *   Author: Michael McCann
+ *   Author: Michael McCann- mimccann
+ *   Partner: -------
  *   School: Indiana University
  *   Assignment: -------
  *   Part of: -------
