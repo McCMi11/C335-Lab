@@ -1,29 +1,19 @@
-/* main.c --- 
- * 
- * Filename: main.c
- * Description: 
- * Author: 
- * Maintainer: 
- * Created: Thu Jan 10 11:23:43 2013
- * Last-Updated: 
- *           By: 
- *     Update #: 0
- * Keywords: 
- * Compatibility: 
- * 
+/******************************************
+ *
+ *
+ *   File: filename.c
+ *   Author: Michael McCann- mimccann
+ *   Partner: 
+ *   School: Indiana University
+ *   Assignment: Lab 9
+ *   Part of: labs
+ *   Description: Displays images from flash
+ *   Date Created: 03/23/2017
+ *   Date Modified: 03/23/2017
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description:  Initial
  */
-
-/* Commentary: 
- * 
- * 
- * 
- */
-
-/* Change log:
- * 
- * 
- */
-/* Code: */
 
 #include <stm32f30x.h>  // Pull in include files for F30x standard drivers 
 #include <f3d_led.h>
@@ -35,30 +25,16 @@
 #include <f3d_mag.h>
 #include <f3d_nunchuk.h>
 #include <f3d_rtc.h>
-#include <ff.h>
-#include <diskio.h>
 #include <stdio.h>
+//#include "mario0.h"
+#include "color_wheel.h"
+#include "mario1.h"
+//#include "mario2.h"
 
-void die (FRESULT rc) {
-  printf("Failed with rc=%u.\n", rc);
-  while (1);
-}
-
-FATFS Fatfs;		/* File system object */
-FIL Fil;		/* File object */
-BYTE Buff[128];		/* File read buffer */
+int rgb24_to_rgb16(int, int, int);
+void RGB565(char *, uint16_t *);
 
 int main(void) { 
-  char footer[20];
-  int count=0;
-  int i;
-
-  FRESULT rc;			/* Result code */
-  DIR dir;			/* Directory object */
-  FILINFO fno;			/* File information object */
-  UINT bw, br;
-  unsigned int retval;
-
   setvbuf(stdin, NULL, _IONBF, 0);
   setvbuf(stdout, NULL, _IONBF, 0);
   setvbuf(stderr, NULL, _IONBF, 0);
@@ -67,68 +43,69 @@ int main(void) {
   f3d_lcd_init();
   f3d_delay_init();
   f3d_rtc_init();
-
-  f_mount(0, &Fatfs);		/* Register volume work area (never fails) */
-
-  printf("\nOpen an existing file (message.txt).\n");
-    rc = f_open(&Fil, "MESSAGE.TXT", FA_READ);
-  if (rc) die(rc);
- 
-  printf("\nType the file content.\n");
-  for (;;) {
-    rc = f_read(&Fil, Buff, sizeof Buff, &br);	/* Read a chunk of file */
-    if (rc || !br) break;			/* Error or end of file */
-    for (i = 0; i < br; i++)		        /* Type the data */
-      putchar(Buff[i]);
+  int direction = 0;
+  int img_toggle = 1;
+  char *color;
+  int i, j, hexColor, k;
+  int drawn = 0;
+  char *pixel[3];
+  char *pix;
+  unsigned char *data = header_data;
+  uint16_t image[width*height];
+  f3d_lcd_fillScreen(WHITE);
+  while (1) {
+    if(!drawn){
+      /*
+      if(img_toggle == 0){
+	printf("Image 0\n");
+	for(i = 0; i < width*height; i++){
+	  HEADER_PIXEL(data, pixel);
+	  pix = pixel;
+	  RGB565(pix,&image[i]);
+	}
+	for(i = 0; i < width_1; i++){
+	  for(k = 0; k < height_1; k++){
+	    f3d_lcd_drawPixel(i,k,image[i+160*k]);
+	  }
+	}
+	}else*/ 
+      if(img_toggle == 1){
+	for(i = 0; i < width_1; i++){
+	  for(k = 0; k < height_1; k++){
+	    color = header_data_cmap_1[header_data_1[i + k*128]];
+	    hexColor = rgb24_to_rgb16((int) *(color), (int) *(color+1), (int) *(color+2));
+	    f3d_lcd_drawPixel(i,k,hexColor);
+	  }
+	} 
+      }
+      drawn = 1;
+    }else{
+      
+    }
   }
-  if (rc) die(rc);
-  
-  printf("\nClose the file.\n");
-  rc = f_close(&Fil);
-  if (rc) die(rc);
-  
-  printf("\nCreate a new file (hello.txt).\n");
-  rc = f_open(&Fil, "HELLO.TXT", FA_WRITE | FA_CREATE_ALWAYS);
-  if (rc) die(rc);
-  
-  printf("\nWrite a text data. (Hello world!)\n");
-  rc = f_write(&Fil, "Hello world!\r\n", 14, &bw);
-  if (rc) die(rc);
-  printf("%u bytes written.\n", bw);
-  
-  printf("\nClose the file.\n");
-  rc = f_close(&Fil);
-  if (rc) die(rc);
-  
-  printf("\nOpen root directory.\n");
-  rc = f_opendir(&dir, "");
-  if (rc) die(rc);
-  
-  printf("\nDirectory listing...\n");
-  for (;;) {
-    rc = f_readdir(&dir, &fno);		/* Read a directory item */
-    if (rc || !fno.fname[0]) break;	/* Error or end of dir */
-    if (fno.fattrib & AM_DIR)
-      printf("   <dir>  %s\n", fno.fname);
-    else
-      printf("%8lu  %s\n", fno.fsize, fno.fname);
-  }
-  if (rc) die(rc);
-  
-  printf("\nTest completed.\n");
-
-  rc = disk_ioctl(0,GET_SECTOR_COUNT,&retval);
-  printf("%d %d\n",rc,retval);
-
-  while (1);
 }
+
+int rgb24_to_rgb16(int R, int G, int B) {
+  B = ((B & 255) >> 3) << 11;
+  G = ((G & 255) >> 2) << 5;
+  R = ((R & 255) >> 3);
+  return ((R | G) | B);
+}
+void RGB565(char *pix, uint16_t *image){
+  uint16_t *color;
+  *color = rgb24_to_rgb16(pix[0], pix[1], pix[2]);
+  *image = *color;
+}
+
+
 
 #ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t* file, uint32_t line) {
-/* Infinite loop */
-/* Use GDB to find out why we're here */
+  /* Infinite loop */
+  /* Use GDB to find out why we're here */
   while (1);
 }
 #endif
 
 /* main.c ends here */
+

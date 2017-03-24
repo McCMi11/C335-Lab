@@ -27,8 +27,6 @@ OBJS=  $(STARTUP) 	main.o \
 			stm32f30x_rtc.o \
 			stm32f30x_tim.o \
 			stm32f30x_pwr.o \
-			ff.o \
-			mmcbb.o \
 			newlib_stubs.o
 # include common make file
 
