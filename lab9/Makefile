@@ -16,7 +16,6 @@ OBJS=  $(STARTUP) 	main.o \
 			glcdfont.o \
 			f3d_i2c.o \
 			f3d_accel.o \
-			f3d_mag.o \
 			f3d_nunchuk.o \
 			f3d_rtc.o \
 			stm32f30x_rcc.o \
