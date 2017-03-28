@@ -217,7 +217,7 @@ int main(void) {
      //calculate pitch and roll
      pitch = atan(a[0]/sqrt(((a[1]) * (a[1])) + ((a[2]) * (a[2]))));
      roll = atan(a[1]/sqrt(((a[0]) * (a[0])) + ((a[2]) * (a[2]))));
-
+     
      //calculate xh and yh
      xh = (m[0] * cos(pitch)) + (m[2] * sin(pitch));
      yh = (m[0]*sin(roll)*sin(pitch))+(m[1]*cos(roll))-(m[2]*sin(roll)*cos(pitch));  
