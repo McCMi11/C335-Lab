@@ -13,10 +13,13 @@
  *   Date Modified: 03/27/2017
  *   Modified By: Michael McCann
  *
- *   Revision Description:  2 Working images.
+ *   Revision Description:  2 Working images, possibly 3
  *            Directions work.
  *            Testing changing directions.
  *            Testing changing images.
+ *            4 pictures will not compile, runs out of memory
+ *               - 3 compiles, need to test
+ *
  */
 
 #include <stm32f30x.h>  // Pull in include files for F30x standard drivers 
@@ -70,10 +73,10 @@ int main(void) {
   uint16_t hexColor;
   int drawn = 0;
   char pixel[3];
-  unsigned char *data = header_data;
+  unsigned char *data;
   // for accel and magg
   float accel[3]; float magg[3];
-  float pitch, roll, xh, yh;
+  float pitch, roll, xh, yh, heading;
   // create nunchuk to be used
   struct nunchuk_data nunck;
   
@@ -83,8 +86,9 @@ int main(void) {
       f3d_lcd_fillScreen(WHITE);
       if(img_toggle == 0){
 	// color wheel, touches top, under white
+	data = header_data_0;
 	for(i = 0; i < width*height; i++){
-	  HEADER_PIXEL_0(data,pixel);
+	  HEADER_PIXEL(data,pixel);
 	  RGB565(pixel, &hexColor);
 	  if(dir == 0) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, down);
 	  else if(dir == 1) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, up);
@@ -104,32 +108,30 @@ int main(void) {
 	      else if(dir == 3) f3d_lcd_drawPixelDir(i,k,hexColor, right);
 	    }
 	  }
-	}else
+	}/*else
 	  if(img_toggle == 2){
-	    // image number 2
-	    /*
+	    // image 2, Google logo(image is by default sideways)
+	    data = header_data_2;
 	    for(i = 0; i < width*height; i++){
-	      HEADER_PIXEL_2(data,pixel);
+	      HEADER_PIXEL(data,pixel);
 	      RGB565(pixel, &hexColor);
 	      if(dir == 0) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, down);
 	      else if(dir == 1) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, up);
 	      else if(dir == 2) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, left);
 	      else if(dir == 3) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, right);
 	    }
-	    */
-	  }else
-	    if(img_toggle == 3){
-	      // image number 2
-	      /*
+	    }*/else
+	    if(img_toggle == 2){
+	      // image number 3, Half Dome
+	      data = header_data_3;
 	      for(i = 0; i < width*height; i++){
-		HEADER_PIXEL_2(data,pixel);
+		HEADER_PIXEL(data,pixel);
 		RGB565(pixel, &hexColor);
 		if(dir == 0) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, down);
 		else if(dir == 1) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, up);
 		else if(dir == 2) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, left);
 		else if(dir == 3) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, right);
 	      }
-	      */
 	    }
       drawn = 1;
     }else{
@@ -160,11 +162,11 @@ int main(void) {
       // check for left or right on joystick
       f3d_nunchuk_read(&nunck);
       if(nunck.jx == 255){
-	dir = (dir + 1) % 4;
+	dir = (dir + 1) % 3;
 	drawn = 0;
       }
       else if(nunck.jx == 0){
-	dir = (dir + 3) % 4;
+	dir = (dir + 2) % 3;
 	drawn = 0;
       }
     }
