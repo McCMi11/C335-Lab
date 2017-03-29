@@ -4,19 +4,17 @@
  *
  *   File: main.c
  *   Author: Michael McCann- mimccann
- *   Partner: 
+ *   Partner: Samuel Carter: sambcart
  *   School: Indiana University
  *   Assignment: Lab 9
  *   Part of: labs
  *   Description: Displays images from flash
  *   Date Created: 03/23/2017
- *   Date Modified: 03/28/2017
+ *   Date Modified: 03/20/2017
  *   Modified By: Michael McCann
  *
- *   Revision Description:  Should be done
- *            Directions work.
- *            Changing pictors work
- *            3 working pictures, 4 too big
+ *   Revision Description: Added partners 
+ *            name and comments
  *
  */
 
@@ -82,24 +80,39 @@ int main(void) {
     if(!drawn){
       // used so when image is redrawn it clears rest
       f3d_lcd_fillScreen(WHITE);
+      // not used, due to size too big
       /*if(img_toggle == 2){
-	// color wheel, touches top, under white
-	data = header_data_0;
-	for(i = 0; i < width*height; i++){
-	  HEADER_PIXEL_1(data,pixel);
-	  RGB565(pixel, &hexColor);
-	  if(dir == 0) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, down);
-	  else if(dir == 1) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, up);
-	  else if(dir == 2) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, left);
-	  else if(dir == 3) f3d_lcd_drawPixelDir((i%128),(i/height),hexColor, right);
-	}
+      // color wheel, touches top, under white
+      data = header_data_0;
+      for(i = 0; i < width*height; i++){
+      HEADER_PIXEL_1(data,pixel);
+      RGB565(pixel, &hexColor);
+      if(dir == 0) f3d_lcd_drawPixelDir((i%width),(i/height),hexColor, down);
+      else if(dir == 1) f3d_lcd_drawPixelDir((i%width),(i/height),hexColor, up);
+      else if(dir == 2) f3d_lcd_drawPixelDir((i%width),(i/height),hexColor, left);
+      else if(dir == 3) f3d_lcd_drawPixelDir((i%width),(i/height),hexColor, right);
+      }
       }else*/
-	if(img_toggle == 0){
-	  // 8 bit mario, faces to the right
-	  data = header_data_1;
-	  for(k = 0; k < height; k++){
-	    for(i = 0; i < width; i++){
-	      HEADER_PIXEL_1(data,pixel);
+      if(img_toggle == 0){
+	// 8 bit mario, faces to the right
+	data = header_data_1;
+	for(k = 0; k < height; k++){
+	  for(i = 0; i < width; i++){
+	    HEADER_PIXEL_1(data,pixel);
+	    RGB565(pixel, &hexColor);
+	    if(dir == 0) f3d_lcd_drawPixelDir(i,k,hexColor, down);
+	    else if(dir == 1) f3d_lcd_drawPixelDir(i,k,hexColor, up);
+	    else if(dir == 2) f3d_lcd_drawPixelDir(i,k,hexColor, left);
+	    else if(dir == 3) f3d_lcd_drawPixelDir(i,k,hexColor, right);
+	  }
+	}
+      }else
+	if(img_toggle == 2){
+	  // image 2,Pokeball
+	  data = header_data_2;
+	  for(k = 0; k < height_2; k++){
+	    for(i = 0; i < width_2; i++){
+	      HEADER_PIXEL_2(data,pixel);
 	      RGB565(pixel, &hexColor);
 	      if(dir == 0) f3d_lcd_drawPixelDir(i,k,hexColor, down);
 	      else if(dir == 1) f3d_lcd_drawPixelDir(i,k,hexColor, up);
@@ -108,12 +121,12 @@ int main(void) {
 	    }
 	  }
 	}else
-	  if(img_toggle == 2){
-	    // image 2,Pokeball
-	    data = header_data_2;
-	    for(k = 0; k < height_2; k++){
-	      for(i = 0; i < width_2; i++){
-		HEADER_PIXEL_2(data,pixel);
+	  if(img_toggle == 1){
+	    // image number 3, Half Dome
+	    data = header_data_3;
+	    for(k = 0; k < height; k++){
+	      for(i = 0; i < width; i++){
+		HEADER_PIXEL(data,pixel);
 		RGB565(pixel, &hexColor);
 		if(dir == 0) f3d_lcd_drawPixelDir(i,k,hexColor, down);
 		else if(dir == 1) f3d_lcd_drawPixelDir(i,k,hexColor, up);
@@ -121,23 +134,7 @@ int main(void) {
 		else if(dir == 3) f3d_lcd_drawPixelDir(i,k,hexColor, right);
 	      }
 	    }
-	  }else
-	    if(img_toggle == 1){
-	      // image number 3, Half Dome
-	      data = header_data_3;
-	      // for(i = 0; i < width*height; i++){
-	      for(k = 0; k < height; k++){
-		for(i = 0; i < width; i++){
-		  HEADER_PIXEL(data,pixel);
-		  RGB565(pixel, &hexColor);
-		  if(dir == 0) f3d_lcd_drawPixelDir(i,k,hexColor, down);
-		  else if(dir == 1) f3d_lcd_drawPixelDir(i,k,hexColor, up);
-		  else if(dir == 2) f3d_lcd_drawPixelDir(i,k,hexColor, left);
-		  else if(dir == 3) f3d_lcd_drawPixelDir(i,k,hexColor, right);
-		}
-	      }
-	      // }
-	    }
+	  }
       drawn = 1;
     }else{
       delay(30);
@@ -175,12 +172,38 @@ int main(void) {
   }
 }
 
+/*****************
+ *   rgb24_to_rgb16
+ *
+ *   Input: - uint16_t R, 
+ *          - uint16_t G, 
+ *          - uint16_t B
+ *   Assumptions of input: Order matters
+ *   Guarantees about output: Outputs a single number,
+ *              the rgb16, but in little endian form
+ *   Description: Converts RGB24 to RGB16(little endian)
+ *
+ *
+ */
 uint16_t rgb24_to_rgb16(uint16_t R, uint16_t G, uint16_t B) {
   B = ((B & 0xFF) >> 3) << 11;
   G = ((G & 0xFF) >> 2) << 5;
   R = ((R & 0xFF) >> 3);
   return ((R | G) | B);
 }
+
+/*****************
+ *   RGB565
+ *
+ *   Input: - char* pix
+ *          - uint16_t image
+ *   Assumptions of input:pix is of size 3 
+ *   Guarantees about output: Outputs a single number,
+ *              the rgb16, but in little endian form.
+ *              Saved in image.
+ *   Description: Converts RGB24 to RGB16(little endian)
+ *
+ */
 void RGB565(char *pix, uint16_t *image){
   uint16_t color;
   color = rgb24_to_rgb16(pix[0], pix[1], pix[2]);
