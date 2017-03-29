@@ -13,8 +13,8 @@
  *   Date Modified: 03/20/2017
  *   Modified By: Michael McCann
  *
- *   Revision Description: Added partners 
- *            name and comments
+ *   Revision Description: Fixed comment,
+ *            Removed unused headerfile
  *
  */
 
@@ -69,7 +69,7 @@ int main(void) {
   uint8_t drawn = 0;
   char pixel[3];
   unsigned char *data;
-  // for accel and magg
+  // for accel
   float accel[3];
   float pitch, roll;
   // create nunchuk to be used
