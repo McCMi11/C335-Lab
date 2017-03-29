@@ -25,7 +25,6 @@
 #include <f3d_lcd_sd.h>
 #include <f3d_i2c.h>
 #include <f3d_accel.h>
-#include <f3d_mag.h>
 #include <f3d_nunchuk.h>
 #include <f3d_rtc.h>
 #include <stdio.h>
