@@ -10,7 +10,7 @@ pixel[2] = header_data_cmap_2[(unsigned char)data[0]][2]; \
 data ++; }
 
 
-static char header_data_cmap_2[63][3] = {
+static char header_data_cmap_2[64][3] = {
 	{255,255,255},
 	{  0,  0,  0},
 	{255,  0,  0},
