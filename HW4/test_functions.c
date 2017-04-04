@@ -67,7 +67,7 @@ void gcd_test(void) {
   for (i=1;i<100;i++) {
     for (j=1;j<100;j++) {
       if (gcd(i,j)!=gcd_c(i,j)) {
-        printf("GCD Error: Input (%lu,%lu), Expected %d, Received %d\n",i,j,gcd_c(i,j),gcd(i,j));
+	printf("GCD Error: Input (%lu,%lu), Expected %d, Received %d\n",i,j,gcd_c(i,j),gcd(i,j));
   	error_count++;
       }
     }
@@ -84,6 +84,7 @@ void fib_test(void) {
   int i;
   int error_count=0;
   for (i=0;i<=46;i++) {
+    //printf("Fib Error: Input %d, Expected %d, Received %d\n",i,fib_c(i),fib(i));
     if (fib(i) != fib_c(i)) {
       printf("Fib Error: Input %d, Expected %d, Received %d\n",i,fib_c(i),fib(i));
       error_count++;
