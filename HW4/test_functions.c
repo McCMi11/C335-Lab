@@ -48,8 +48,8 @@ void abs_test(void) {
   int error_count=0;
   int i;
   for (i=-100;i<100;i++) {
-    if (abs(i)!=abs_c(i)) {    
-      printf("ABS Error: Input %d, Expected %d, Received %d\n",i,abs_c(i),abs(i));
+    if (ab(i)!=abs_c(i)) {    
+      printf("ABS Error: Input %d, Expected %d, Received %d\n",i,abs_c(i),ab(i));
       error_count++;
     }
   }
@@ -83,7 +83,7 @@ void gcd_test(void) {
 void fib_test(void) {
   int i;
   int error_count=0;
-  for (i=0;i<=46;i++) {
+  for (i=0;i<=60;i++) {
     //printf("Fib Error: Input %d, Expected %d, Received %d\n",i,fib_c(i),fib(i));
     if (fib(i) != fib_c(i)) {
       printf("Fib Error: Input %d, Expected %d, Received %d\n",i,fib_c(i),fib(i));

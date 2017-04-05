@@ -1,0 +1,24 @@
+
+regName.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <regName>:
+   0:	b4f0      	push	{r4, r5, r6, r7}
+   2:	280f      	cmp	r0, #15
+   4:	dc03      	bgt.n	e <.ERR>
+   6:	4903      	ldr	r1, [pc, #12]	; (14 <.labA>)
+   8:	0080      	lsls	r0, r0, #2
+   a:	5808      	ldr	r0, [r1, r0]
+   c:	e000      	b.n	10 <.END>
+
+0000000e <.ERR>:
+   e:	2000      	movs	r0, #0
+
+00000010 <.END>:
+  10:	bcf0      	pop	{r4, r5, r6, r7}
+  12:	4770      	bx	lr
+
+00000014 <.labA>:
+  14:	00000000 	.word	0x00000000

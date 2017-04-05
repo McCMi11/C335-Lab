@@ -1,14 +1,14 @@
 	.text
 	.syntax unified
 	.thumb
-	.global	abs	
-	.type abs, %function
-abs:
-	movs r7, 0
-	subs r6, r7, r4
-	bgt .END
-	movs r4, r6
+	.global	ab	
+	.type ab, %function
+ab:
+	push {r4-r7}
+	movs r7, #0
+	subs r6, r7, r0 // 0 - input = -input
+	blt .END
+	movs r0, r6
 	.END:
-	movs r0, r4
-	pop {r4-r7}	
+	pop {r4-r7}
 	bx	lr
