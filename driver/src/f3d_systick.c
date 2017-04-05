@@ -36,15 +36,24 @@
 
 #include <f3d_systick.h>
 #include <f3d_led.h> 
-#include <f3d_button.h>
+#include <f3d_user_btn.h>
 #include <f3d_uart.h>
 
 volatile int systick_flag = 0;
 
-void f3d_systick_init(void) {
+void f3d_systick_init(int ips) {
+    // Takes interrupts per second
+    SysTick_Config(SystemCoreClock / ips);
+}
+
+void Delay(uint32_t nTime) {
+    TimingDelay = nTime;
+    while (TimingDelay != 0);
 }
 
 void SysTick_Handler(void) {
+    if (TimingDelay != 0x00)
+        TimingDelay--;
 }
 
 /* f3d_systick.c ends here */
