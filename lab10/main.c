@@ -1,3 +1,19 @@
+/*
+ *   File: main.c
+ *   Author: Michael McCann- mimccann
+ *   Partner: Samuel Carter- sambcart
+ *   School: Indiana University
+ *   Assignment: Lab 10
+ *   Part of: Labs
+ *   Description: Turns on LED at interval, with echo
+ *                using systic.
+ *   Date Created: 03/30/2017
+ *   Date Modified: 04/06/2017
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description:  Added comment block
+ */
+
 //#include <stdio.h>
 #include <f3d_user_btn.h>
 #include <f3d_systick.h>
