@@ -14,6 +14,7 @@ OBJS=  $(STARTUP) 	main.o\
 			f3d_uart.o \
 			f3d_gyro.o \
 			f3d_delay.o \
+			queue.o \
 			f3d_lcd_sd.o \
 			glcdfont.o \
 			stm32f30x_rcc.o \

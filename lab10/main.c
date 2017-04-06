@@ -16,25 +16,9 @@
 int main(void) {
     f3d_led_init();
     f3d_user_btn_init();
-    f3d_systick_init(100);
     f3d_uart_init();
-
-    int led_n = 0;
-    int delay_ms = 1;
-
-    while (1) {
-        // NOTE: delay_ms * (1000ms / 100) is milliseconds
-        if (user_btn_read())
-            delay_ms = 10;
-        else
-            delay_ms = 1;
-
-        Delay(delay_ms);
-        f3d_led_on(led_n);
-        Delay(delay_ms);
-        f3d_led_all_off();
-        led_n = (led_n + 1) % 8;
-    }
+    f3d_systick_init(100);
+    // see f3d_systic in drivers
 }
 
 

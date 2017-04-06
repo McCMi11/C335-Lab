@@ -13,6 +13,11 @@
 
 #include <stm32f30x.h>
 #include <f3d_uart.h>
+#include <queue.h>
+
+static int TxPrimed = 0;
+queue_t txbuf;
+queue_t rxbuf;
 //the initialization function to call
 void f3d_uart_init(void) {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -63,19 +68,45 @@ void f3d_uart_init(void) {
   USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);
 }
 
+void flush_uart(void) {
+  USART_ITConfig(USART1,USART_IT_TXE,ENABLE); 
+}
+
+void USART1_IRQHandler(void) {
+  int ch; 
+
+  if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)) {
+    ch = USART_ReceiveData(USART1);
+    if (!enqueue(&rxbuf,ch)) {}    // overflow case -- 
+                                   // throw away data and perhaps flag status
+  }
+  if (USART_GetFlagStatus(USART1,USART_FLAG_TXE)) {
+    ch = dequeue(&txbuf, &ch);
+    if (ch) {
+      USART_SendData(USART1,ch);
+    }
+    else {                        // Queue is empty, disable interrupt
+      USART_ITConfig(USART1,USART_IT_TXE,DISABLE);
+      TxPrimed = 0;               // signal putchar to reenable
+    }
+  }
+}
+
+
 //sends a character
 int putchar(int c) {
-    while (USART_GetFlagStatus(USART1,USART_FLAG_TXE) == (uint16_t)RESET);
-    USART_SendData(USART1, c);
-    return 0;
+  while (!enqueue(&txbuf , c));
+  if (!TxPrimed) {
+    TxPrimed = 1;
+    flush_uart();
+  }
 } 
 
 //gets a character
 int getchar(void) {
-    int c;
-    while (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == (uint16_t)RESET);
-    c = USART_ReceiveData(USART1);
-    return c;
+  int data;
+  while (!dequeue(&rxbuf , &data));
+  return data;
 }
 
 //sends a string
@@ -87,26 +118,6 @@ void putstring(char *s) {
     }
 }
 
-static int TxPrimed = 0;
 
-void USART1_IRQHandler(void) {
-  int ch; 
-
-  if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)) {
-    ch = USART_ReceiveData(USART1);
-    if (!enqueue(&rxbuf,ch)) {}    // overflow case -- 
-                                   // throw away data and perhaps flag status
-  }
-  if (USART_GetFlagStatus(USART1,USART_FLAG_TXE)) {
-    ch = dequeue(&txbuf);
-    if (ch) {
-      USART_SendData(USART1,ch);
-    }
-    else {                        // Queue is empty, disable interrupt
-      USART_ITConfig(USART1,USART_IT_TXE,DISABLE);
-      TxPrimed = 0;               // signal putchar to reenable
-    }
-  }
-}
 
 /* f3d_uart.c ends here */

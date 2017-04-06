@@ -38,6 +38,7 @@
 #include <f3d_led.h> 
 #include <f3d_user_btn.h>
 #include <f3d_uart.h>
+#include <queue.h>
 
 volatile int systick_flag = 0;
 
@@ -51,9 +52,16 @@ void Delay(uint32_t nTime) {
     while (TimingDelay != 0);
 }
 
+int led_n = 0;
 void SysTick_Handler(void) {
-    if (TimingDelay != 0x00)
-        TimingDelay--;
+  putchar(getchar());
+  if(user_btn_read()){
+    SysTick_Config(SystemCoreClock / 10);
+  }
+  else  SysTick_Config(SystemCoreClock / 100);
+  f3d_led_all_off();
+  led_n = (led_n + 1) % 8;
+  f3d_led_on(led_n);
 }
 
 /* f3d_systick.c ends here */
