@@ -42,10 +42,13 @@
 
 volatile int systick_flag = 0;
 
+void f3d_systick_init() {
+}
+/*
 void f3d_systick_init(int ips) {
     // Takes interrupts per second
     SysTick_Config(SystemCoreClock / ips);
-}
+    }*/
 
 void Delay(uint32_t nTime) {
     TimingDelay = nTime;

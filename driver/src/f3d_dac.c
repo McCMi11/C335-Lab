@@ -175,6 +175,7 @@ void audioplayerStart(void) {
 
 }
 
+
 void audioplayerStop(void) {
   // Disable everything 
   DMA_Cmd(DMA2_Channel4, DISABLE);

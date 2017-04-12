@@ -37,7 +37,8 @@
 
 #define SYSTICK_INT_SEC 100
 
-void f3d_systick_init(int);
+void f3d_systick_init(void);
+//void f3d_systick_init(int);
 
 static __IO uint32_t TimingDelay;
 
