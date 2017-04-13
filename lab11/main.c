@@ -34,15 +34,17 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h>
-#include "chirp.h"
+#include <f3d_nunchuk.h>
+
 #define TIMER 20000
 #define AUDIOBUFSIZE 128
-
+int play(int);
 extern uint8_t Audiobuf[AUDIOBUFSIZE];
 extern int audioplayerHalf;
 extern int audioplayerWhole;
 
-extern unsigned char __500hz_16_wav[];
+extern unsigned char chirp_16_wav[];
+extern unsigned char alarm_16_wav[];
 
 struct ckhd {
   uint32_t ckID;
@@ -72,9 +74,7 @@ struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID) {
 
 int main(void) {
 
-  unsigned int retval;
-  int bytesread;
-  unsigned char * datapos = __500hz_16_wav;
+
 
   setvbuf(stdin, NULL, _IONBF, 0);
   setvbuf(stdout, NULL, _IONBF, 0);
@@ -86,7 +86,38 @@ int main(void) {
   f3d_rtc_init();
   f3d_systick_init();
   f3d_uart_init();
+  f3d_lcd_init();
+  f3d_i2c1_init();
+  delay(10);
+  f3d_nunchuk_init();
+  delay(10);
+  
+  int played = 0;
+  int file = 0;
+  struct nunchuk_data nunck;
+  while (1){
+    if(!played){
+      play(file);
+      played = 1; // played
+    }
+    else{
+      f3d_nunchuk_read(&nunck);
+       if(nunck.jx == 255 || nunck.jx == 0){
+	 file = (file + 1) % 2;
+	 played = 0;
+      }
+      else if(nunck.c == 1){
+	played = 0;
+      }
+    }
+  }
+}
 
+int play(int i){
+  unsigned int retval;
+  int bytesread;
+  unsigned char * datapos = chirp_16_wav;
+  if(!i) datapos = alarm_16_wav; 
   printf("Reset\n");
 
   struct ckhd hd;
@@ -132,32 +163,42 @@ int main(void) {
 
   // Play it !
 
-  memcpy(Audiobuf, datapos, AUDIOBUFSIZE);
-  datapos += AUDIOBUFSIZE;
-  hd.cksize -= AUDIOBUFSIZE;
+  memcpy(Audiobuf, datapos, AUDIOBUFSIZE / 2);
+  datapos += AUDIOBUFSIZE / 2;
+  hd.cksize -= AUDIOBUFSIZE / 2;
+  //printf("%x\n", *datapos);
   audioplayerStart();
   while (hd.cksize) {
     int next = hd.cksize > AUDIOBUFSIZE / 2 ? AUDIOBUFSIZE / 2 : hd.cksize;
-    if (audioplayerHalf) {
-      if (next < AUDIOBUFSIZE / 2)
+    if (audioplayerHalf) { // runs at beginning
+      //printf("Half %x\n", *datapos);
+      if (next < AUDIOBUFSIZE / 2){
+	printf("Half bzero\n");
         bzero(Audiobuf, AUDIOBUFSIZE / 2);
+      }
       memcpy(Audiobuf, datapos, next);
       hd.cksize -= next;
       audioplayerHalf = 0;
+      datapos += next;
     }
-    if (audioplayerWhole) {
-      if (next < AUDIOBUFSIZE / 2)
+    if (audioplayerWhole) { // runs at end
+      //printf("Whole %x\n", *datapos);
+      if (next < AUDIOBUFSIZE / 2){
+	printf("Whole bzero\n");
         bzero( &Audiobuf[AUDIOBUFSIZE / 2], AUDIOBUFSIZE / 2);
+      }
       memcpy( &Audiobuf[AUDIOBUFSIZE / 2], datapos, next);
       hd.cksize -= next;
       audioplayerWhole = 0;
+      datapos += next;
     }
+    //
     //printf("Playing... %d", hd.cksize);
   }
   audioplayerStop();
 
   printf("\nClose the file.\n");
-  while (1);
+  return 0;
 }
 
 #ifdef USE_FULL_ASSERT

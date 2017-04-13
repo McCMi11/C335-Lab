@@ -43,6 +43,7 @@
 volatile int systick_flag = 0;
 
 void f3d_systick_init() {
+   SysTick_Config(SystemCoreClock / 1000);
 }
 /*
 void f3d_systick_init(int ips) {
@@ -57,6 +58,7 @@ void Delay(uint32_t nTime) {
 
 int led_n = 0;
 void SysTick_Handler(void) {
+  /*
   putchar(getchar());
   if(user_btn_read()){
     SysTick_Config(SystemCoreClock / 10);
@@ -65,6 +67,7 @@ void SysTick_Handler(void) {
   f3d_led_all_off();
   led_n = (led_n + 1) % 8;
   f3d_led_on(led_n);
+  */
 }
 
 /* f3d_systick.c ends here */
