@@ -34,3 +34,7 @@ It allows the DMA controller to finish its transfer before some other device is 
 ```c
 while (DMA_GetFlagStatus(dmaflag) == RESET) { ; }
 ```
+
+###Question 4: For transfers of less than 4 bytes, what do you think is the reason for not using the xchng_datablock functions?
+
+The processor could do the transfer just as fast, DMA would be a waste of resources.
