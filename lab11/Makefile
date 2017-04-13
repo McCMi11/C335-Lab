@@ -14,6 +14,7 @@ OBJS=  $(STARTUP) 	main.o \
 			f3d_user_btn.o \
 			f3d_nunchuk.o \
 			f3d_i2c.o \
+			f3d_lcd_sd.o \
 			f3d_uart.o \
 			f3d_led.o \
 			glcdfont.o \
@@ -22,7 +23,6 @@ OBJS=  $(STARTUP) 	main.o \
 			f3d_dac.o \
 			f3d_timer2.o \
 			f3d_rtc.o \
-			f3d_lcd_sd.o \
 			stm32f30x_rcc.o \
 			stm32f30x_tim.o \
 			stm32f30x_gpio.o \

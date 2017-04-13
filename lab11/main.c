@@ -24,6 +24,7 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h>
+#include <f3d_lcd_sd.h>
 #include <f3d_nunchuk.h>
 
 #define TIMER 20000
@@ -76,6 +77,12 @@ int main(void) {
   int played = 0;
   int file = 0;
   struct nunchuk_data nunck;
+  // uses DMA
+  f3d_lcd_fillScreen2(WHITE);
+  f3d_lcd_drawString(2,0, "Choose file in red.", BLACK, WHITE);
+  f3d_lcd_drawString(10,20, "chirp.wav", BLACK,WHITE);
+  f3d_lcd_drawString(10, 10, "Alarm.wav", RED, WHITE);
+  f3d_lcd_drawString(2,30, "Press \"c\" to play.", BLACK, WHITE);
   while (1){
     if(!played){
       play(file);
@@ -83,13 +90,19 @@ int main(void) {
     }
     else{
       f3d_nunchuk_read(&nunck);
-       if(nunck.jx == 255 || nunck.jx == 0){
-	 file = (file + 1) % 2;
-	 played = 0;
+      if(nunck.jy == 255 || nunck.jy == 0){
+	file = (file + 1) % 2;
+	if(file){
+	  f3d_lcd_drawString(10,20, "chirp.wav", RED,WHITE);
+	  f3d_lcd_drawString(10, 10, "Alarm.wav", BLACK, WHITE);
+	}else{
+	  f3d_lcd_drawString(10,20, "chirp.wav", BLACK,WHITE);
+	  f3d_lcd_drawString(10, 10, "Alarm.wav", RED, WHITE);
+	}
       }
-      else if(nunck.c == 1){
-	played = 0;
-      }
+      if(nunck.c)
+	  played = 0;
+      delay(100);
     }
   }
 }
