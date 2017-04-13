@@ -1,29 +1,19 @@
-/* main.c --- 
- * 
- * Filename: main.c
- * Description: 
- * Author: 
- * Maintainer: 
- * Created: 
- * Last-Updated: 
- *           By: 
- *     Update #: 0
- * Keywords: 
- * Compatibility: 
- * 
+/******************************************
+ *
+ *
+ *   File: main.c
+ *   Author: Michael McCann- mimccann
+ *   Partner: Samuel Carter: sambcart
+ *   School: Indiana University
+ *   Assignment: lab 11
+ *   Part of: labs
+ *   Description: Plays sounds, displays options on screen
+ *   Date Created: 04/06/2017
+ *   Date Modified: 04/13/2017
+ *   Modified By: Michael McCann
+ *
+ *   Revision Description:  Changed comment block
  */
-
-/* Commentary: 
- * 
- * 
- * 
- */
-
-/* Change log:
- * 
- * 
- */
-/* Code: */
 
 #include <stm32f30x.h> // Pull in include files for F30x standard drivers 
 #include <f3d_led.h> // Pull in include file for the local drivers
@@ -62,15 +52,6 @@ struct fmtck {
 
 struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID);
 
-struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID) {
-  hd = (struct ckhd * )data;
-  printf("ckID: %x\n",ckID);
-  printf("hd->ckID: %x\n", hd->ckID);
-  printf("cksize: %i\n",hd->cksize);
-  if (ckID && (ckID != hd->ckID))
-    exit(-1);
-  return *hd;
-}
 
 int main(void) {
 
@@ -200,6 +181,17 @@ int play(int i){
   printf("\nClose the file.\n");
   return 0;
 }
+
+struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID) {
+  hd = (struct ckhd * )data;
+  printf("ckID: %x\n",ckID);
+  printf("hd->ckID: %x\n", hd->ckID);
+  printf("cksize: %i\n",hd->cksize);
+  if (ckID && (ckID != hd->ckID))
+    exit(-1);
+  return *hd;
+}
+
 
 #ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t * file, uint32_t line) {
