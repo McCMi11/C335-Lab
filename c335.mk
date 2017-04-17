@@ -118,7 +118,7 @@ $(ELF) : $(OBJS)
 	$(OC) -O binary $< $@
 
 clean:
-	$(RM) -f $(OBJS) $(OBJS:.o=.d) $(ELF) startup_stm32f* $(CLEANOTHER) $(BIN) *.d
+	$(RM) -f $(OBJS) $(OBJS:.o=.d) $(ELF) startup_stm32f* $(CLEANOTHER) $(BIN) *.d *~
 
 debug: $(ELF)
 	arm-none-eabi-gdb $(ELF)
