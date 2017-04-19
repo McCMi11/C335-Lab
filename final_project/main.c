@@ -11,7 +11,7 @@
 void splash(){
   struct nunchuk_data nunck;
 
-  f3d_lcd_fillScreen2(WHITE); // remove at end
+  f3d_lcd_fillScreen(WHITE); // remove at end
   int i, k;
   uint16_t hexColor;
   char *data = kickAsteroid_data;
@@ -84,7 +84,7 @@ void splash(){
 void instructions(){
   struct nunchuk_data nunck;
 
-  f3d_lcd_fillScreen2(BLACK);
+  f3d_lcd_fillScreen(BLACK);
   char *rules[] = {
     "Rule1",
     "RUle2",

@@ -7,7 +7,7 @@
 
 extern struct Tank TANK;
 void start(){
-  f3d_lcd_fillScreen2(WHITE); // remove at end
+  f3d_lcd_fillScreen(WHITE); // remove at end
   // set up default start location
   TANK.centerX = 64;
   TANK.centerY = 80;
