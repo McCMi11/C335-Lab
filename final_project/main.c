@@ -4,34 +4,79 @@
 #include "game.h"
 #include "main.h"
 #include "draw.h"
+
+// images
 #include "kickAsteroid.h" // title screen
 #include "samFinger.h" // finger for pointing
 #include "STMLogo.h"  // STMLogo for boot
 
+// sounds
+#include "Scream.h"
+
+#define TIMER 20000
+#define AUDIOBUFSIZE 128
+int play();
+extern uint8_t Audiobuf[AUDIOBUFSIZE];
+extern int audioplayerHalf;
+extern int audioplayerWhole;
+
+struct ckhd {
+  uint32_t ckID;
+  uint32_t cksize;
+};
+
+struct fmtck {
+  uint16_t wFormatTag;
+  uint16_t nChannels;
+  uint32_t nSamplesPerSec;
+  uint32_t nAvgBytesPerSec;
+  uint16_t nBlockAlign;
+  uint16_t wBitsPerSample;
+};
+
+struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID);
+
 void boot(){
-  f3d_lcd_fillScreen(WHITE); // remove at end
-  int i, k;
-  uint16_t hexColor;
-  char *data = STMLogo_data;
   char pixel[3];
   uint16_t title[128];
+  char *data = STMLogo_data;
+  int i, k;
+  uint16_t hexColor;
+  uint16_t BG;
+  uint8_t offset = (128 - STMLogo_width)/2;
+  uint8_t offsety = (160 - STMLogo_height)/2;
+  // setting background color
+  STM_LOGO(data, pixel);
+  RGB565(pixel, &BG);
+  f3d_lcd_fillScreen(BG);
+  data = STMLogo_data;
+ 
   for(k = 0; k < STMLogo_height; k++){
     for(i = 0; i < STMLogo_width; i++){
-      KICK_ASTEROID(data, pixel);
+      STM_LOGO(data, pixel);
       RGB565(pixel, &hexColor);
       title[i] = hexColor;
     }
-    f3d_lcd_setAddrWindow (0,k+40,STMLogo_width-1,k+40,MADCTLGRAPHICS);
+    f3d_lcd_setAddrWindow (offset,k+offsety,STMLogo_width-1 + offset,k+offsety,MADCTLGRAPHICS);
     f3d_lcd_pushColor(title,STMLogo_width);
   }
-  delay(30*1000); // 30 second delay
+  i = 500;
+  k = 0;
+  while(i--){
+    drawSquare(k, offsety+STMLogo_height+5, 4, BLACK);
+    delay(10);
+    drawSquare(k, offsety+STMLogo_height+5, 4, BG);
+    k = (k + 4) % 128; 
+  }
+  play();
+  delay(500);
   splash();
 }
 
 void splash(){
   struct nunchuk_data nunck;
 
-  f3d_lcd_fillScreen(WHITE); // remove at end
+  //f3d_lcd_fillScreen(WHITE); // remove at end
   int i, k;
   uint16_t hexColor;
   char *data = kickAsteroid_data;
@@ -43,12 +88,13 @@ void splash(){
       RGB565(pixel, &hexColor);
       title[i] = hexColor;
     }
-    f3d_lcd_setAddrWindow (0,k,ST7735_width-1,k,MADCTLGRAPHICS);
-    f3d_lcd_pushColor(title,ST7735_width);
+    f3d_lcd_setAddrWindow (0,k,kickAsteroid_width-1,k,MADCTLGRAPHICS);
+    f3d_lcd_pushColor(title,kickAsteroid_width);
   }
   
   int moved = 1; // 0 = no
   int pos = 0; // 0 = start for drawing and end for selecting
+  int init = 1;
   while(1){
     // code here for selecting on menu
     //start();
@@ -90,11 +136,11 @@ void splash(){
       f3d_nunchuk_read(&nunck);
       if(nunck.jy == 255 || nunck.jy == 0){
 	moved = 1;
-	delay(200);
-      }
-      else delay(100);
+	//delay(200);
+      }else if(nunck.c && !init) break; // exit loop, c button was pressed
+      else init = 0;
+      delay(50);
     }
-    if(nunck.c) break; // exit loop, c button was pressed
   }
   // ******* NOTE pos is flipped here  ********* //
   if(pos) start(); // start game
@@ -102,8 +148,6 @@ void splash(){
 }
 
 void instructions(){
-  struct nunchuk_data nunck;
-
   f3d_lcd_fillScreen(BLACK);
   char *rules[] = {
     "Rule1",
@@ -113,24 +157,37 @@ void instructions(){
     ""
   }; // set of fules
   int i = 0;
+  
+  f3d_lcd_drawString(5, 4, "Kick Asteroid", RED, BLACK);
+  drawRect(0, 15, 128, 1, RED);
   while(**(rules + i)){
-    f3d_lcd_drawString(5, 10*i + 5, *(rules + i), WHITE, BLACK);
+    f3d_lcd_drawString(5, 10*i + 35, *(rules + i), RED, BLACK);
     i++;
   } // draw each rule line by line, starting at line 5, each 5 from left
-  while(!nunck.c) f3d_nunchuk_read(&nunck); // wait for c button to be pressed
+  struct nunchuk_data nunck;
+  delay(100);
+  nunck.c = 0;
+  int init = 1;
+  while(1){
+    f3d_nunchuk_read(&nunck);
+    // wait for c button to be pressed
+    if(nunck.c && !init) break;
+    init = 0;
+  }
   splash(); // go back to splash
 }
 
+
 int main(){
-  setvbuf(stdin, NULL, _IONBF, 0);
-  setvbuf(stdout, NULL, _IONBF, 0);
-  setvbuf(stderr, NULL, _IONBF, 0);
+  /* setvbuf(stdin, NULL, _IONBF, 0); */
+  /* setvbuf(stdout, NULL, _IONBF, 0); */
+  /* setvbuf(stderr, NULL, _IONBF, 0); */
   f3d_timer2_init();
   f3d_dac_init();
   f3d_delay_init();
   f3d_rtc_init();
   f3d_systick_init();
-  f3d_uart_init();
+  //f3d_uart_init();
   f3d_lcd_init();
   f3d_i2c1_init();
   delay(10);
@@ -143,9 +200,106 @@ int main(){
   
   // START GAME
   boot();
+  //splash();
   return 0;
 }
 
+int play(){
+  unsigned int retval;
+  int bytesread;
+  unsigned char * datapos = Scream_wav;
+  //printf("Reset\n");
+
+  struct ckhd hd;
+  uint32_t waveid;
+  struct fmtck fck;
+
+  //printf("reading RIFF section... \n");
+  hd = readckhd2(datapos, &hd, 'FFIR');
+  datapos += sizeof(struct ckhd);
+
+  //printf("reading WAVE section... \n");
+  waveid = *((uint32_t * ) datapos);
+  datapos += sizeof(waveid);
+  if (waveid != 'EVAW')
+    return -1;
+
+  //printf("reading fmt section... \n");
+  hd = readckhd2(datapos, &hd, ' tmf');
+  datapos += sizeof(struct ckhd);
+
+  //printf("reading wav info section... \n");
+  fck = * ((struct fmtck * ) datapos);
+  datapos += sizeof(fck);
+
+  //printf("audio format 0x%x\n", fck.wFormatTag);
+  //printf("channels %d\n", fck.nChannels);
+  //printf("sample rate %d\n", fck.nSamplesPerSec);
+  //printf("data rate %d\n", fck.nAvgBytesPerSec);
+  //printf("block alignment %d\n", fck.nBlockAlign);
+  //printf("bits per sample %d\n", fck.wBitsPerSample);
+
+  // now skip all non-data chunks !
+
+  while (1) {
+    hd = readckhd2(datapos, &hd, 0); //sets the next numbers for hd
+    datapos += sizeof(struct ckhd); //moves the datapos position down a block
+    if (hd.ckID == 'atad') //if they're equal to data string
+      break;
+    datapos += hd.cksize;   //if not move the pointer to whatever junk is in size
+  }
+
+  //printf("Samples %d\n", hd.cksize);
+
+  // Play it !
+
+  memcpy(Audiobuf, datapos, AUDIOBUFSIZE / 2);
+  datapos += AUDIOBUFSIZE / 2;
+  hd.cksize -= AUDIOBUFSIZE / 2;
+  //printf("%x\n", *datapos);
+  audioplayerStart();
+  while (hd.cksize) {
+    int next = hd.cksize > AUDIOBUFSIZE / 2 ? AUDIOBUFSIZE / 2 : hd.cksize;
+    if (audioplayerHalf) { // runs at beginning
+      //printf("Half %x\n", *datapos);
+      if (next < AUDIOBUFSIZE / 2){
+	//printf("Half bzero\n");
+        bzero(Audiobuf, AUDIOBUFSIZE / 2);
+      }
+      memcpy(Audiobuf, datapos, next);
+      hd.cksize -= next;
+      audioplayerHalf = 0;
+      datapos += next;
+    }
+    if (audioplayerWhole) { // runs at end
+      //printf("Whole %x\n", *datapos);
+      if (next < AUDIOBUFSIZE / 2){
+	//printf("Whole bzero\n");
+        bzero( &Audiobuf[AUDIOBUFSIZE / 2], AUDIOBUFSIZE / 2);
+      }
+      memcpy( &Audiobuf[AUDIOBUFSIZE / 2], datapos, next);
+      hd.cksize -= next;
+      audioplayerWhole = 0;
+      datapos += next;
+    }
+    //
+    //printf("Playing... %d", hd.cksize);
+  }
+  audioplayerStop();
+
+  //printf("\nClose the file.\n");
+  return 0;
+}
+
+struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID) {
+  hd = (struct ckhd * )data;
+  //printf("ckID: %x\n",ckID);
+  //printf("hd->ckID: %x\n", hd->ckID);
+  //printf("cksize: %i\n",hd->cksize);
+  if (ckID && (ckID != hd->ckID))
+    exit(-1);
+  return *hd;
+}
 
 #ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t * file, uint32_t line) {
