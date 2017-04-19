@@ -67,19 +67,18 @@ void splash(){
       }
       moved = 0;
     }else{
-      // ******* NOTE pos is flipped here  ********* //
       f3d_nunchuk_read(&nunck);
       if(nunck.jy == 255 || nunck.jy == 0){
 	moved = 1;
 	delay(200);
       }
       else delay(100);
-      if(nunck.c){
-	if(pos) start(); // start game
-	else instructions(); // Instructions
-      }
     }
+    if(nunck.c) break; // exit loop, c button was pressed
   }
+  // ******* NOTE pos is flipped here  ********* //
+  if(pos) start(); // start game
+  else instructions(); // Instructions
 }
 
 void instructions(){
@@ -92,13 +91,14 @@ void instructions(){
     "rule3",
     "...",
     ""
-  };
+  }; // set of fules
   int i = 0;
   while(**(rules + i)){
-    f3d_lcd_drawString(5, 10*i, *(rules + i), WHITE, BLACK);
+    f3d_lcd_drawString(5, 10*i + 5, *(rules + i), WHITE, BLACK);
     i++;
-  }
-  while(!nunck.c) f3d_nunchuk_read(&nunck);
+  } // draw each rule line by line, starting at line 5, each 5 from left
+  while(!nunck.c) f3d_nunchuk_read(&nunck); // wait for c button to be pressed
+  splash(); // go back to splash
 }
 
 int main(){
