@@ -22,6 +22,7 @@
 /*   FUNCTIONS     */
 
 void splash();
+void instructions();
 
 
 /*   END main.h   */

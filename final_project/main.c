@@ -44,13 +44,13 @@ void splash(){
 	    RGB565(pixel, &hexColor);
 	    title[i] = hexColor;
 	  }
-	  // 123 is End
+	  // 123 is Instructions
 	  f3d_lcd_setAddrWindow (0,k+123, samFinger_width,k+123,MADCTLGRAPHICS);
 	  f3d_lcd_pushColor(title,samFinger_width);
 	}
 	pos = 0;
       }else{
-	 // 123 is End
+	 // 123 is Instructions
 	drawRect(0, 123, samFinger_width, samFinger_height, BLACK);
 	data = samFinger_data;
 	for(k = 0; k < samFinger_height; k++){
@@ -76,10 +76,29 @@ void splash(){
       else delay(100);
       if(nunck.c){
 	if(pos) start(); // start game
-	else splash(); // reset
+	else instructions(); // Instructions
       }
     }
   }
+}
+
+void instructions(){
+  struct nunchuk_data nunck;
+
+  f3d_lcd_fillScreen2(BLACK);
+  char *rules[] = {
+    "Rule1",
+    "RUle2",
+    "rule3",
+    "...",
+    ""
+  };
+  int i = 0;
+  while(**(rules + i)){
+    f3d_lcd_drawString(5, 10*i, *(rules + i), WHITE, BLACK);
+    i++;
+  }
+  while(!nunck.c) f3d_nunchuk_read(&nunck);
 }
 
 int main(){
