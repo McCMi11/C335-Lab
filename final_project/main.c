@@ -3,12 +3,82 @@
 // local includes
 #include "game.h"
 #include "main.h"
+#include "draw.h"
+#include "kickAsteroid.h" // title
+#include "samFinger.h" // finger
+
 
 void splash(){
-  // code here for splash
+  struct nunchuk_data nunck;
+
+  f3d_lcd_fillScreen2(WHITE); // remove at end
+  int i, k;
+  uint16_t hexColor;
+  char *data = kickAsteroid_data;
+  char pixel[3];
+  uint16_t title[128];
+  for(k = 0; k < kickAsteroid_height; k++){
+    for(i = 0; i < kickAsteroid_width; i++){
+      KICK_ASTEROID(data, pixel);
+      RGB565(pixel, &hexColor);
+      title[i] = hexColor;
+    }
+    f3d_lcd_setAddrWindow (0,k,ST7735_width-1,k,MADCTLGRAPHICS);
+    f3d_lcd_pushColor(title,ST7735_width);
+  }
+  
+  int moved = 1; // 0 = no
+  int pos = 0; // 0 = start for drawing and end for selecting
   while(1){
     // code here for selecting on menu
-    start();
+    //start();
+    // move finger
+    if(moved){
+      if(pos){
+	 // 106 is Start
+	drawRect(0, 106, samFinger_width, samFinger_height, BLACK);
+	data = samFinger_data;
+	for(k = 0; k < samFinger_height; k++){
+	  for(i = 0; i < samFinger_width; i++){
+	    SAM_FINGER(data, pixel);
+	    RGB565(pixel, &hexColor);
+	    title[i] = hexColor;
+	  }
+	  // 123 is End
+	  f3d_lcd_setAddrWindow (0,k+123, samFinger_width,k+123,MADCTLGRAPHICS);
+	  f3d_lcd_pushColor(title,samFinger_width);
+	}
+	pos = 0;
+      }else{
+	 // 123 is End
+	drawRect(0, 123, samFinger_width, samFinger_height, BLACK);
+	data = samFinger_data;
+	for(k = 0; k < samFinger_height; k++){
+	  for(i = 0; i < samFinger_width; i++){
+	    SAM_FINGER(data, pixel);
+	    RGB565(pixel, &hexColor);
+	    title[i] = hexColor;
+	  }
+	  // 106 is Start
+	  f3d_lcd_setAddrWindow (0,k+106, samFinger_width,k+106,MADCTLGRAPHICS);
+	  f3d_lcd_pushColor(title,samFinger_width);
+	}
+	pos = 1;
+      }
+      moved = 0;
+    }else{
+      // ******* NOTE pos is flipped here  ********* //
+      f3d_nunchuk_read(&nunck);
+      if(nunck.jy == 255 || nunck.jy == 0){
+	moved = 1;
+	delay(200);
+      }
+      else delay(100);
+      if(nunck.c){
+	if(pos) start(); // start game
+	else splash(); // reset
+      }
+    }
   }
 }
 
