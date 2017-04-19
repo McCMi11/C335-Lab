@@ -21,6 +21,7 @@
 
 /*   FUNCTIONS     */
 
+void boot();
 void splash();
 void instructions();
 

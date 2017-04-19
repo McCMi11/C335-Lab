@@ -4,9 +4,29 @@
 #include "game.h"
 #include "main.h"
 #include "draw.h"
-#include "kickAsteroid.h" // title
-#include "samFinger.h" // finger
+#include "kickAsteroid.h" // title screen
+#include "samFinger.h" // finger for pointing
+#include "STMLogo.h"  // STMLogo for boot
 
+void boot(){
+  f3d_lcd_fillScreen(WHITE); // remove at end
+  int i, k;
+  uint16_t hexColor;
+  char *data = STMLogo_data;
+  char pixel[3];
+  uint16_t title[128];
+  for(k = 0; k < STMLogo_height; k++){
+    for(i = 0; i < STMLogo_width; i++){
+      KICK_ASTEROID(data, pixel);
+      RGB565(pixel, &hexColor);
+      title[i] = hexColor;
+    }
+    f3d_lcd_setAddrWindow (0,k+40,STMLogo_width-1,k+40,MADCTLGRAPHICS);
+    f3d_lcd_pushColor(title,STMLogo_width);
+  }
+  delay(30*1000); // 30 second delay
+  splash();
+}
 
 void splash(){
   struct nunchuk_data nunck;
@@ -122,7 +142,7 @@ int main(){
   delay(10);
   
   // START GAME
-  splash();
+  boot();
   return 0;
 }
 
