@@ -37,8 +37,6 @@ struct fmtck {
 struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID);
 
 void boot(){
-  char pixel[3];
-  uint16_t title[128];
   char *data = STMLogo_data;
   int i, k;
   uint16_t hexColor;
@@ -80,8 +78,8 @@ void splash(){
   int i, k;
   uint16_t hexColor;
   char *data = kickAsteroid_data;
-  char pixel[3];
-  uint16_t title[128];
+  //char pixel[3];  // moved in header
+  //uint16_t title[128];  // moved in header
   for(k = 0; k < kickAsteroid_height; k++){
     for(i = 0; i < kickAsteroid_width; i++){
       KICK_ASTEROID(data, pixel);
@@ -132,16 +130,18 @@ void splash(){
 	pos = 1;
       }
       moved = 0;
+      while (nunck.jy == 255 || nunck.jy == 0) {
+	f3d_nunchuk_read(&nunck);
+      }
     }else{
       f3d_nunchuk_read(&nunck);
       if(nunck.jy == 255 || nunck.jy == 0){
 	moved = 1;
-	//delay(200);
       }else if(nunck.c && !init) break; // exit loop, c button was pressed
       else init = 0;
-      delay(50);
     }
   }
+
   // ******* NOTE pos is flipped here  ********* //
   if(pos) start(); // start game
   else instructions(); // Instructions
@@ -175,33 +175,6 @@ void instructions(){
     init = 0;
   }
   splash(); // go back to splash
-}
-
-
-int main(){
-  /* setvbuf(stdin, NULL, _IONBF, 0); */
-  /* setvbuf(stdout, NULL, _IONBF, 0); */
-  /* setvbuf(stderr, NULL, _IONBF, 0); */
-  f3d_timer2_init();
-  f3d_dac_init();
-  f3d_delay_init();
-  f3d_rtc_init();
-  f3d_systick_init();
-  //f3d_uart_init();
-  f3d_lcd_init();
-  f3d_i2c1_init();
-  delay(10);
-  f3d_nunchuk_init();
-  delay(10);
-  f3d_accel_init();
-  delay(10);
-  f3d_mag_init();
-  delay(10);
-  
-  // START GAME
-  boot();
-  //splash();
-  return 0;
 }
 
 int play(){
@@ -299,6 +272,32 @@ struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID) {
   if (ckID && (ckID != hd->ckID))
     exit(-1);
   return *hd;
+}
+
+int main(){
+  /* setvbuf(stdin, NULL, _IONBF, 0); */
+  /* setvbuf(stdout, NULL, _IONBF, 0); */
+  /* setvbuf(stderr, NULL, _IONBF, 0); */
+  f3d_timer2_init();
+  f3d_dac_init();
+  f3d_delay_init();
+  f3d_rtc_init();
+  f3d_systick_init();
+  //f3d_uart_init();
+  f3d_lcd_init();
+  f3d_i2c1_init();
+  delay(10);
+  f3d_nunchuk_init();
+  delay(10);
+  f3d_accel_init();
+  delay(10);
+  f3d_mag_init();
+  delay(10);
+  
+  // START GAME
+  //boot();
+  while(1) splash();
+  return 0;
 }
 
 #ifdef USE_FULL_ASSERT

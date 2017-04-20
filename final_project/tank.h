@@ -3,13 +3,13 @@
 #include <stdint.h>
 
 /*     Variables    */
-struct Tank {
+typedef struct Tank {
   char centerX;
   char centerY;
   char health;
-};
+}Tank_t;
 
-struct Tank TANK;
+Tank_t TANK;
 
 /*    Functions    */
 

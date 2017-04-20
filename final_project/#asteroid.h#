@@ -11,6 +11,14 @@ typedef struct Asteroid {
   unsigned char dir;
 }Asteroid_t;
 
+/* Asteroid movement
+ * as.dir is of form 0b0000____, where last four bits
+ *   correspond to UP, RIGHT, DOWN, LEFT
+ *   eg. 0b00000110 means move RIGHT and DOWN (1 pixel each)
+ * as.x = as.x + (as.dir & 0b0100) - (as.dir & 0b0001);
+ * as.y = as.y + (as.dir & 0b0010) - (as.dir & 0b1000);
+ */
+
 // blue, red, yellow, white
 static uint16_t AsteroidColors[] = {
   0xF800, 0x001F, 0x07FF, 0xFFFF

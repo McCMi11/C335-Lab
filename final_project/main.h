@@ -19,7 +19,8 @@
 #include <math.h>
 
 /*   VARIABLES   */
-//uint16_t title[128];
+char pixel[3];
+uint16_t title[128];
 
 
 /*   FUNCTIONS     */

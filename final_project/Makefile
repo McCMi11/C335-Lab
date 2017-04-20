@@ -12,7 +12,6 @@ OBJS=  $(STARTUP) 	main.o \
 			tank.o \
 			asteroid.o \
 			draw.o \
-			queue.o \
 			f3d_accel.o \
 			f3d_mag.o \
 			f3d_user_btn.o \
