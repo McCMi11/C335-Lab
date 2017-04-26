@@ -181,36 +181,25 @@ int play(){
   unsigned int retval;
   int bytesread;
   unsigned char * datapos = Scream_wav;
-  //printf("Reset\n");
 
   struct ckhd hd;
   uint32_t waveid;
   struct fmtck fck;
 
-  //printf("reading RIFF section... \n");
   hd = readckhd2(datapos, &hd, 'FFIR');
   datapos += sizeof(struct ckhd);
 
-  //printf("reading WAVE section... \n");
   waveid = *((uint32_t * ) datapos);
   datapos += sizeof(waveid);
   if (waveid != 'EVAW')
     return -1;
 
-  //printf("reading fmt section... \n");
   hd = readckhd2(datapos, &hd, ' tmf');
   datapos += sizeof(struct ckhd);
 
-  //printf("reading wav info section... \n");
   fck = * ((struct fmtck * ) datapos);
   datapos += sizeof(fck);
 
-  //printf("audio format 0x%x\n", fck.wFormatTag);
-  //printf("channels %d\n", fck.nChannels);
-  //printf("sample rate %d\n", fck.nSamplesPerSec);
-  //printf("data rate %d\n", fck.nAvgBytesPerSec);
-  //printf("block alignment %d\n", fck.nBlockAlign);
-  //printf("bits per sample %d\n", fck.wBitsPerSample);
 
   // now skip all non-data chunks !
 
@@ -222,21 +211,16 @@ int play(){
     datapos += hd.cksize;   //if not move the pointer to whatever junk is in size
   }
 
-  //printf("Samples %d\n", hd.cksize);
-
   // Play it !
 
   memcpy(Audiobuf, datapos, AUDIOBUFSIZE / 2);
   datapos += AUDIOBUFSIZE / 2;
   hd.cksize -= AUDIOBUFSIZE / 2;
-  //printf("%x\n", *datapos);
   audioplayerStart();
   while (hd.cksize) {
     int next = hd.cksize > AUDIOBUFSIZE / 2 ? AUDIOBUFSIZE / 2 : hd.cksize;
     if (audioplayerHalf) { // runs at beginning
-      //printf("Half %x\n", *datapos);
       if (next < AUDIOBUFSIZE / 2){
-	//printf("Half bzero\n");
         bzero(Audiobuf, AUDIOBUFSIZE / 2);
       }
       memcpy(Audiobuf, datapos, next);
@@ -245,9 +229,7 @@ int play(){
       datapos += next;
     }
     if (audioplayerWhole) { // runs at end
-      //printf("Whole %x\n", *datapos);
       if (next < AUDIOBUFSIZE / 2){
-	//printf("Whole bzero\n");
         bzero( &Audiobuf[AUDIOBUFSIZE / 2], AUDIOBUFSIZE / 2);
       }
       memcpy( &Audiobuf[AUDIOBUFSIZE / 2], datapos, next);
@@ -255,20 +237,13 @@ int play(){
       audioplayerWhole = 0;
       datapos += next;
     }
-    //
-    //printf("Playing... %d", hd.cksize);
   }
   audioplayerStop();
-
-  //printf("\nClose the file.\n");
   return 0;
 }
 
 struct ckhd readckhd2(unsigned char * data, struct ckhd * hd, uint32_t ckID) {
   hd = (struct ckhd * )data;
-  //printf("ckID: %x\n",ckID);
-  //printf("hd->ckID: %x\n", hd->ckID);
-  //printf("cksize: %i\n",hd->cksize);
   if (ckID && (ckID != hd->ckID))
     exit(-1);
   return *hd;
@@ -294,8 +269,9 @@ int main(){
   f3d_mag_init();
   delay(10);
   
+  STATE = NONGAME;
   // START GAME
-  //boot();
+  // boot();
   while(1) splash();
   return 0;
 }

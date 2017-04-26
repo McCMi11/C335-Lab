@@ -7,7 +7,7 @@
 #include <f3d_i2c.h>
 #include <f3d_rtc.h>
 #include <f3d_systick.h>
-//#include <stdio.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,7 +21,13 @@
 /*   VARIABLES   */
 char pixel[3];
 uint16_t title[128];
-
+int timer;
+enum {MOVE, DRAW, END, NONGAME};
+int STATE;
+int timeMin;
+int timeSec;
+int scoreChanged;
+int timeChanged;
 
 /*   FUNCTIONS     */
 

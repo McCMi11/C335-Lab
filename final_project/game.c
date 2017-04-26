@@ -15,6 +15,12 @@ void start(){
   initGame();
   float accel[3], magg[3];
   float pitch, roll, xh, yh, degrees, heading;
+  int i;
+  char timeStr[6];
+  char scoreStr[5];
+  timeStr[5] = '\0';
+  scoreStr[2] = ':';
+  scoreStr[4] = '\0';
 
   f3d_accel_read(accel);
   f3d_mag_read(magg);
@@ -36,52 +42,68 @@ void start(){
   srand(SEED);
   int randN = 0;
   randN = rand() % (116 + 1 - 0) + 0;
-  Asteroid_t ASTEROIDS[MAXASTEROIDS];
-  enum {MOVE, DRAW, END};
-  int STATE = DRAW;
+  Asteroid_t *ASTEROIDS[MAXASTEROIDS];
   char rate = 2; // number spawning per second.
   // play the game
 
   Asteroid_t testAsteroid;
-  testAsteroid.x = 0;
-  testAsteroid.y = 0;
- 
+  testAsteroid.x = 128-11;
+  testAsteroid.y = BOTTOM - 11;
+  // move asteroid down right
+  testAsteroid.dir = 0b00001001;
+  totalAsteroids = 1;
+  ASTEROIDS[0] = &testAsteroid;
   while(1){
-    /* SEED = SEED + ((int) ((((float) SEED) * pitch * totalTime + roll*xh) * heading / pitch)  * totalTime) % (4294967295/2); */
-    /* srand(SEED); */
-    /* randN = rand() % (116 + 1 - 0) + 0; */
-    /* if(!(randN % 5)){ */
-    /*   testAsteroid.x = randN; */
-    /*   testAsteroid.y = 0; */
-    /* } else if(!(randN % 4)){ */
-    /*   randN = rand() % (BOTTOM-11 - 0) + 0; */
-    /*   testAsteroid.y = randN; */
-    /*   testAsteroid.x = 0; */
-    /* }else if(!(randN % 3)){ */
-    /*   randN = rand() % (BOTTOM-11 - 0) + 0; */
-    /*   testAsteroid.y = randN; */
-    /*   testAsteroid.x = 127-11; */
-    /* }else{ */
-    /*   testAsteroid.x = randN; */
-    /*   testAsteroid.y = BOTTOM-11; */
-    /* } */
-    /* testAsteroid.col = rand() % 4; */
-    /* drawAsteroid(&testAsteroid); */
-
-
     drawRect(11, 11, 106, 1, RED);
     drawRect(11, BOTTOM - 11, 106, 1, RED);
     drawRect(11, 11, 1, BOTTOM - 22, RED);
     drawRect(117, 11, 1, BOTTOM - 22, RED);
-    switch(STATE){
-      case MOVE: break;
-      case DRAW: break;
-      case END: break;
+    // draws all Asteroids
+    for(i = 0; i < totalAsteroids; i++){
+      drawAsteroid(ASTEROIDS[i]);
     }
+    delay(100); // used to slow down production, make dynamic
+    // clears all Asteroids that are off the screen
+    // moves all the other Asteroids
+    for(i = 0; i < totalAsteroids; i++){
+       clearAsteroid(ASTEROIDS[i]);
+      if(!moveAsteroid(ASTEROIDS[i])){
+      	// remove that asteroid.
+      	// set current last as prevois
+      	ASTEROIDS[i] = ASTEROIDS[totalAsteroids - 1];
+      	totalAsteroids--;
+      	drawRect(11, 11, 106, BOTTOM - 22, RED);
+      }
+    }
+    switch(STATE){
+    case MOVE: break;
+    case DRAW: break;
+    case END: break;
+    }
+    /* //if(timeChanged){ */
+    /* sprintf(timeStr, "%02d", timeMin); */
+    /* sprintf(timeStr+3, "%02d", timeSec); */
+    /* timeStr[5] = '\0'; */
+    /* timeStr[2] = ':'; */
+    /* f3d_lcd_drawString(31, BOTTOM + 5, timeStr, BLACK, WHITE); */
+    /* timeChanged = 0; */
+    /* //} */
+    /* //if(scoreChanged){ */
+    /* sprintf(scoreStr, "%04d", score); */
+    /* scoreStr[4] = '\0'; */
+    /* f3d_lcd_drawString(104, BOTTOM + 5, scoreStr, BLACK, WHITE); */
+    /* scoreChanged = 0; */
+    //}
   }
 }
 
 void initGame(){
+  timeChanged = 0;
+  scoreChanged = 0;
+  timeMin = 10;
+  timeSec = 15;
+  timer = 1000;
+
   drawRect(0, 0, 128, BOTTOM, BLACK);
   drawRect(0, BOTTOM, 128, 160 - BOTTOM, WHITE);
   // set up default start location
@@ -91,7 +113,7 @@ void initGame(){
   // about the center
   drawRect(0, BOTTOM, 128, 1, RED);
   // time (5,150) -> (30,150)
-  f3d_lcd_drawString(1, BOTTOM + 5, "Time:", BLACK, WHITE);
+    f3d_lcd_drawString(1, BOTTOM + 5, "Time:", BLACK, WHITE);
   f3d_lcd_drawString(31, BOTTOM + 5, "00:00", BLACK, WHITE);
   
   // divide time and total
