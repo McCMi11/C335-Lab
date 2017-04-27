@@ -3,16 +3,41 @@
 #include "asteroid.h"
 #include "main.h"
 extern unsigned char BOTTOM;
-
+extern unsigned int SEED;
 // makes pseudo random asteroid and adds to belt
-void makeAsteroid(){
-  
+void makeAsteroid(Asteroid_t *a){
+  srand(SEED);
+  int randN = rand() % 4;
+  int randX = rand() % 117;
+  int randY = rand() % 134;
+  if (randN == 0) {
+    // TOP
+    a->y = 0;
+    a->x = randX;
+    a->dx = 0;
+    a->dy = 1;
+  } else if (randN == 1) {
+    // RIGHT
+    a->y = randY;
+    a->x = 116;
+    a->dx = -1;
+    a->dy = 0;
+  } else if (randN == 2){
+    // BOTTOM
+    a->y = 133;
+    a->x = randX;
+    a->dx = 0;
+    a->dy = -1;
+  } else{
+    // LEFT
+    a->y = randY;
+    a->x = 0;
+    a->dx = 1;
+    a->dy = 0;
+  }
+  a->col = rand() % 4;
 }
 void makeMakeMultAsteroid(unsigned char n){
-  while(n){
-    makeAsteroid();
-    n--;
-  }
 }
 void clearAsteroid(Asteroid_t *a){
   uint8_t x = a->x;
@@ -63,25 +88,13 @@ void drawAllAsteroids(Asteroid_t *a, int n){
 }
 
 int moveAsteroid(Asteroid_t *a){
-  /* if(a->dir >> 3){ */
-  /*   // move up */
-  /*   a->y += 1; */
-  /* } */
-  /* if(a->dir >> 2){ */
-  /*   a->x += 1; */
-  /* } */
-  /* if(a->dir){ */
-  /*   a->y -= 1; */
-  /* } */
-  /* if(a->dir & 0b0001 > 0){ */
-  /*   a->x -= -1; */
-  /* } */
-  a->x = a->x + (a->dir & 0b0100)/0b0100 - (a->dir & 0b0001)/0b0001;
-  a->y = a->y + (a->dir & 0b0010)/0b0010 - (a->dir & 0b1000)/0b1000;
+  a->x = a->x + a->dx;
+  a->y = a->y + a->dy;
   // return 1 if no error
-  // return 0 if error
+  // return 0 if error, meaning off screen
   if(a->x > 117 || a->y > 145 - 11) return 0;
   else return 1;
+
 }
 
 

@@ -150,11 +150,12 @@ void splash(){
 void instructions(){
   f3d_lcd_fillScreen(BLACK);
   char *rules[] = {
-    "Dodge Asteroids",
+    "Use joystick to move",
     " ",
-    "Lose if Hit",
-    " ",
-    "Move with joystick",
+    "You (the GREEN spaceship)",
+    "have been given the task",
+    "of evading the galaxy's",
+    "...",
     ""
   }; // set of fules
   int i = 0;

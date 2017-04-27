@@ -8,7 +8,8 @@ typedef struct Asteroid {
   uint8_t x;
   uint8_t y;
   unsigned char col;
-  unsigned char dir;
+  int dx;
+  int dy;
 }Asteroid_t;
 
 /* Asteroid movement
@@ -26,7 +27,7 @@ static uint16_t AsteroidColors[] = {
 
 static char AsteroidLayout[] = { // circle of radius 10
 //  0  1  2  3  4  5  6  7  8  9  10
-    0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, //0
+    0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, //
     0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, //1
     0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, //2
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, //3
@@ -46,7 +47,7 @@ static char AsteroidLayout[] = { // circle of radius 10
 
 /*    Functions     */
 
-void makeAsteroid();
+void makeAsteroid(Asteroid_t *a);
 void makeMakeMultAsteroid(unsigned char n);
 void drawAsteroid(Asteroid_t * a);
 void drawAllAsteroids();
