@@ -58,20 +58,16 @@ void Delay(uint32_t nTime) {
     while (TimingDelay != 0);
 }
 
-int led_n = 0;
+//extern int nuke;
 extern unsigned int totalTime;
 void SysTick_Handler(void) {
   totalTime++;
-  // timer--;
-  /* if(!timer){ */
-  /*   timeSec++; */
-  /*   if(timeSec == 60){ */
-  /*     timeSec = 0; */
-  /*     timeMin++; */
-  /*   } */
-  /*   timer = 1000; */
-  /*   timeChanged = 1; */
-  /* } */
+  timer--;
+  // if(!timer && !nuke){
+  //timeSec++; 
+  //timer = 10000;
+    //nuke = 2;
+  // }
   /*
     putchar(getchar());
     if(user_btn_read()){
