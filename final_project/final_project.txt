@@ -1,0 +1,19 @@
+1) Description of game concept and core functionality
+      - Move ship around and survive.
+      - Don't get hit
+      - Move with joystick
+      - Accelerometer and magnometer is used for randomness
+      - Randomly place asteroids and move them in a direction
+
+2) Task Breakdown between partners for the project
+      - Code layout: Michael
+      - Set up Asteroid: Michael
+      - Set up Tank: Bryce
+      - Set up drawing: Michael
+      - Collision detection: Bryce
+      - Boot/Splash setup design: Michael
+      - Rules/Explination: Bryce
+      - Movement in game: Bryce
+      - Random placement and generation: Michael
+      - Combine code to work together: Both
+      - Searching for bugs: Both
