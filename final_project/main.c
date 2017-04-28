@@ -150,11 +150,17 @@ void splash(){
 void instructions(){
   f3d_lcd_fillScreen(BLACK);
   char *rules[] = {
-    "Dodge Asteroids",
-    " ",
-    "Lose if Hit",
-    " ",
-    "Move with joystick",
+    "You (the GREEN space",
+    "ship) have been giv-",
+    "en the task of trav-",
+    "ersing the galaxy's ",
+    "most treacherous",
+    "stretches of space.",
+    "Dodge the asteroids",
+    "to survive and",
+    "complete your",
+    "mission. Please, do",
+    "it for the puppies!",
     ""
   }; // set of fules
   int i = 0;
@@ -162,7 +168,7 @@ void instructions(){
   f3d_lcd_drawString(5, 4, "Kick Asteroid", RED, BLACK);
   drawRect(0, 15, 128, 1, RED);
   while(**(rules + i)){
-    f3d_lcd_drawString(5, 10*i + 35, *(rules + i), RED, BLACK);
+    f3d_lcd_drawString(5, 10*i + 30, *(rules + i), RED, BLACK);
     i++;
   } // draw each rule line by line, starting at line 5, each 5 from left
   struct nunchuk_data nunck;
@@ -272,7 +278,7 @@ int main(){
   
   STATE = NONGAME;
   // START GAME
-  // boot();
+  boot();
   while(1) splash();
   return 0;
 }

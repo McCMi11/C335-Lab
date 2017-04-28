@@ -10,12 +10,15 @@
 uint8_t tankX, tankY;
 int tankDx, tankDy;
 Asteroid_t ASTEROIDS[];
-static unsigned char MAXASTEROIDS = 5;  // allows for 36 asteroids total
-unsigned char totalAsteroids = 5; // start with 0 Asteroids
+static unsigned char MAXASTEROIDS = 10;  // allows for 36 asteroids total
+unsigned char totalAsteroids = 10; // start with 0 Asteroids
 static unsigned char BOTTOM = 145; // bottom line of game
 unsigned int SEED = 54654;
 unsigned int totalTime = 1;
+//int nuke;
+//int cycles = 0;
 void start(){
+  //nuke = 0;
   initGame();
   float accel[3], magg[3];
   float pitch, roll, xh, yh, degrees, heading;
@@ -49,20 +52,25 @@ void start(){
     makeAsteroid(&ASTEROIDS[i]);
   }
   // set up default start location
-  /* TANK.x = 75; */
-  /* TANK.y = 60; */
-  /* TANK.dy = 0; */
-  /* TANK.dx = 0; */
   tankX = 75;
   tankY = 60;
   tankDx = 0;
   tankDy = 0;
   struct nunchuk_data nunck;
   f3d_nunchuk_read(&nunck);
+
+  uint8_t nukeX, nukeY;
   while(1){
     f3d_nunchuk_read(&nunck);
     f3d_accel_read(accel);
     f3d_mag_read(magg);
+    /* if(nuke == 2){ */
+    /*   // create nuke */
+    /*   SEED = SEED + ((int) ((((float) SEED) * pitch * totalTime + roll*xh) * heading / pitch)  * totalTime) % (4294967295/2); */
+    /*   nukeX = rand() % 85 + 20; */
+    /*   nukeY = rand() % 90 + 20; */
+    /*   drawTank(nukeX, nukeY); */
+    /* } */
 
     
     if(nunck.jx == 255 && tankX <= 105) tankX++;
@@ -93,7 +101,7 @@ void start(){
       drawAsteroid(&ASTEROIDS[i]);
     }
     drawTank(tankX, tankY);
-    delay(5); // used to slow down production, make dynamic
+    delay(3); // used to slow down production, make dynamic
     // clears all Asteroids that are off the screen
     // moves all the other Asteroids
     for(i = 0; i < totalAsteroids; i++){
@@ -110,7 +118,9 @@ void start(){
     for(i = 0; i < totalAsteroids; i++){
           if(!dist(ASTEROIDS[i].x+5, tankX+5, ASTEROIDS[i].y+5, tankY+5, 10)){
            // loss
-	    return;
+	    f3d_lcd_fillScreen(RED);
+	    play();
+      	    return;
         }
     }
   }
