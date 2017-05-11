@@ -20,7 +20,7 @@ This was the base of not just how the asteroids looked, but also moved and were 
 
 This was actually the least important thing that I did for the project, due to most of the shapes wer not used, or were only used a couple of times, which made it have almost no effect on how the project worked.  The main one that was used was draw rect and draw line, which are basically the same thing, due to we never draw a line that isnt horrizontal or vertical, although the function supports it.  We also never use them except for drawing a couple of colors, which means they could have been used only for that and not needed the extra argument of a color.
 
-###4. Boot/Splash setup
+###4. Boot/Splash setup 
 
 This was not required, but added to the apprearance of the game, which it was also a nice challenge, due to we used 3 images on it as well as a sound, which means a lot of planning on space was required to fit all of the data in flash storage.  This was a problem, but I knew I could come up with a solution that worked and worked well.  These give the game a feature that makes it stand out from the crowd.
 
